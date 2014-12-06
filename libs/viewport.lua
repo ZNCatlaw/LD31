@@ -57,13 +57,17 @@ function Viewport:setScale(scale)
         screen_h = screen_h - 96
     end
 
+    -- Fix retina scaling
+    screen_w = screen_w * love.window.getPixelScale()
+    screen_h = screen_h * love.window.getPixelScale()
+
     local max_scale = math.min(roundDownToNearest(screen_w / self.width, self.multiple),
                                roundDownToNearest(screen_h / self.height, self.multiple))
 
     if (self.fs or (scale or 0) <= 0 or (scale or 0) > max_scale) then
-        self.r_scale = max_scale * love.window.getPixelScale()
+        self.r_scale = max_scale
     else
-        self.r_scale = scale * love.window.getPixelScale()
+        self.r_scale = scale
     end
 
     return self.r_scale
@@ -77,6 +81,10 @@ function Viewport:fixSize(w, h)
         screen_w = screen_w - 64
         screen_h = screen_h - 96
     end
+
+    -- Fix retina scaling
+    screen_w = screen_w * love.window.getPixelScale()
+    screen_h = screen_h * love.window.getPixelScale()
 
     local cur_scale = math.max(roundDownToNearest(w / self.width, self.multiple),
                                roundDownToNearest(h / self.height, self.multiple))
