@@ -1,23 +1,3 @@
--- Set-up global Input objects.
-love.inputman = require('libs/inputman').newSingleton()
-
--- Screw the literally zillions of input callbacks, we're going to use two
--- custom events instead.
---
-function love.inputpressed(state)
-    love.debug.printIf('input', 'pressed:', state)
-
-    -- An example of input/sound
-    if(state == 'select') then love.soundman.run('select') end
-end
-
-function love.inputreleased(state)
-    love.debug.printIf('input', 'released:', state)
-
-end
-
--- Maybe we want to use keypressed as well for a few global
---
 function love.keypressed(key)
     if(key == 'f10') then
         love.event.quit()
@@ -25,15 +5,19 @@ function love.keypressed(key)
         love.viewport.setFullscreen()
         love.viewport.setupScreen()
     elseif(key == 'f12') then
-        love.inputman.threadStatus()
-        love.soundman.threadStatus()
     end
+
+    Gamestate.keypressed(key)
 end
 
-function love.joystickadded(j)
-    love.inputman.updateJoysticks()
+function love.keyreleased(key)
+    Gamestate.keyreleased(key)
 end
 
-function love.joystickremoved(j)
-    love.inputman.updateJoysticks()
+function love.mousepressed(x, y, button)
+    Gamestate.mousepressed(x, y, button)
+end
+
+function love.mousereleased(x, y, button)
+    Gamestate.mousereleased(x, y, button)
 end

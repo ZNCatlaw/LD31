@@ -14,7 +14,8 @@ function Viewport:initialize(opts)
         scale  = 0,
         multiple = 1,
         filter = {'nearest', 'nearest', 0},
-        fs     = false
+        fs     = false,
+        cb     = function() end
     }, opts)
 
     self:setWidth(opts.width)
@@ -23,23 +24,30 @@ function Viewport:initialize(opts)
     self:setScale(opts.scale)
     self:setFilter(opts.filter)
     self:setFullscreen(opts.fs)
+    self:setCallback(opts.cb)
     self:setupScreen()
 end
 
 function Viewport:setupScreen()
     self:setScale(self.scale)
     love.graphics.setDefaultFilter(unpack(self:getFilter()))
+    local pScale = love.window.getPixelScale()
     if(self:setFullscreen(self.fs)) then
-        love.window.setMode(0, 0, {fullscreen = true, fullscreentype = "desktop"})
+        love.window.setMode(0, 0, {fullscreen = true, fullscreentype = "desktop",
+                                   highdpi = conf.window.highdpi, fsaa = conf.window.fsaa})
     else
-        love.window.setMode(self.width * self.r_scale,
-                            self.height * self.r_scale,
-                            {resizable = true})
+        love.window.setMode(self.width * self.r_scale / pScale,
+                            self.height * self.r_scale / pScale,
+                            {highdpi = conf.window.highdpi,
+                             resizable = conf.window.resizable,
+                             fsaa = conf.window.fsaa})
     end
     self.r_width  = self.width * self.r_scale
     self.r_height = self.height * self.r_scale
-    self.draw_ox  = (love.graphics.getWidth() -  (self.r_width)) / 2
+    self.draw_ox  = (love.graphics.getWidth() - (self.r_width)) / 2
     self.draw_oy  = (love.graphics.getHeight() - (self.r_height)) / 2
+
+    self.cb(self:getParams())
 end
 
 function Viewport:setScale(scale)
@@ -47,12 +55,17 @@ function Viewport:setScale(scale)
     self.scale = scale
 
     local screen_w, screen_h = love.window.getDesktopDimensions()
+
     if (not self.fs) then
         -- subtract some height so that windowed mode doesn't scale
         -- beyond titlebar + application bar height in windows
-        screen_w = screen_w - 64
-        screen_h = screen_h - 96
+        screen_w = screen_w - 32
+        screen_h = screen_h - 64
     end
+
+    local pixel_scale = love.window.getPixelScale()
+    screen_w = screen_w * pixel_scale
+    screen_h = screen_h * pixel_scale
 
     local max_scale = math.min(roundDownToNearest(screen_w / self.width, self.multiple),
                                roundDownToNearest(screen_h / self.height, self.multiple))
@@ -68,12 +81,17 @@ end
 
 function Viewport:fixSize(w, h)
     local screen_w, screen_h = love.window.getDesktopDimensions()
+
     if (not self.fs) then
         -- subtract some height so that windowed mode doesn't scale
         -- beyond titlebar + application bar height in windows
-        screen_w = screen_w - 64
-        screen_h = screen_h - 96
+        screen_w = screen_w - 32
+        screen_h = screen_h - 64
     end
+
+    local pixel_scale = love.window.getPixelScale()
+    screen_w = screen_w * pixel_scale
+    screen_h = screen_h * pixel_scale
 
     local cur_scale = math.max(roundDownToNearest(w / self.width, self.multiple),
                                roundDownToNearest(h / self.height, self.multiple))
@@ -132,6 +150,17 @@ function Viewport:setFilter(min, mag, anisotropy)
         self.filter = {min, mag, anisotropy}
     end
     return self.filter
+end
+
+function Viewport:setCallback(cb)
+    if(type(cb) == 'function') then
+        self.cb = cb
+    end
+    return self.cb
+end
+
+function Viewport:getCallback()
+    return self.cb
 end
 
 function Viewport:getParams()

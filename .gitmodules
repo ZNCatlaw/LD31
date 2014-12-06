@@ -1,0 +1,3 @@
+[submodule "vendor/sti"]
+	path = vendor/sti
+	url = git@github.com:karai17/Simple-Tiled-Implementation.git

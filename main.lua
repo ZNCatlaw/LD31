@@ -32,6 +32,10 @@ hump = {
     Timer  = require('vendor/hump/timer'),
     Vector = require('vendor/hump/vector')
 }
+Gamestate = hump.GS
+
+-- Simple Tiled Implementation
+STI = require('vendor/sti')
 
 -- Helper methods
 serialize  = require('vendor/ser')
@@ -77,7 +81,6 @@ require('love/update')
 
 -- draw.lua -- Draw method
 --   Exports:
---     love.viewport -- Viewport singleton
 --     love.draw()
 require('love/draw')
 

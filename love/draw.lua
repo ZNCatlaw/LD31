@@ -1,5 +1,3 @@
-love.viewport = require('libs/viewport').newSingleton()
-
 function love.draw()
 
     for i, vert in pairs(game.spaceship.graph.verts) do
@@ -19,4 +17,5 @@ function love.draw()
         love.graphics.circle("fill", crew.x, crew.y, 10)
     end
 
+    return Gamestate.draw()
 end

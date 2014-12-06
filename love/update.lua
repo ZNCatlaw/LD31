@@ -1,7 +1,6 @@
 --love.debug.setFlag("all")
 
 function love.update(dt)
-
     --Update here
     for i = #(game.spaceship.crew), 1, -1 do
         local crew = game.spaceship.crew[i]
@@ -50,4 +49,6 @@ function love.update(dt)
             end
         end
     end
+
+    Gamestate.update(dt)
 end
