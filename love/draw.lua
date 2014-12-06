@@ -1,3 +1,3 @@
 function love.draw()
-    Gamestate.current():draw()
+    Gamestate.draw()
 end

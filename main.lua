@@ -81,7 +81,6 @@ require('love/update')
 
 -- draw.lua -- Draw method
 --   Exports:
---     love.viewport -- Viewport singleton
 --     love.draw()
 require('love/draw')
 
