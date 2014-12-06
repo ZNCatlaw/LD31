@@ -33,11 +33,14 @@ function Viewport:setupScreen()
     love.graphics.setDefaultFilter(unpack(self:getFilter()))
     local pScale = love.window.getPixelScale()
     if(self:setFullscreen(self.fs)) then
-        love.window.setMode(0, 0, {fullscreen = true, fullscreentype = "desktop", highdpi = true})
+        love.window.setMode(0, 0, {fullscreen = true, fullscreentype = "desktop",
+                                   highdpi = conf.window.highdpi, fsaa = conf.window.fsaa})
     else
         love.window.setMode(self.width * self.r_scale / pScale,
                             self.height * self.r_scale / pScale,
-                            {highdpi = true, resizable = false})
+                            {highdpi = conf.window.highdpi,
+                             resizable = conf.window.resizable,
+                             fsaa = conf.window.fsaa})
     end
     self.r_width  = self.width * self.r_scale
     self.r_height = self.height * self.r_scale

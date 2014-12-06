@@ -9,5 +9,7 @@ function love.conf(t)
     t.window.minheight = t.window.height
     t.window.highdpi = true
 
+    t.defaultImageFilter = {'linear', 'linear', 8}
+
     _G.conf = t -- Makes configuration options accessible later
 end
