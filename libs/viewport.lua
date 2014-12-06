@@ -14,7 +14,8 @@ function Viewport:initialize(opts)
         scale  = 0,
         multiple = 1,
         filter = {'nearest', 'nearest', 0},
-        fs     = false
+        fs     = false,
+        cb     = function() end
     }, opts)
 
     self:setWidth(opts.width)
@@ -23,6 +24,7 @@ function Viewport:initialize(opts)
     self:setScale(opts.scale)
     self:setFilter(opts.filter)
     self:setFullscreen(opts.fs)
+    self:setCallback(opts.cb)
     self:setupScreen()
 end
 
@@ -33,13 +35,14 @@ function Viewport:setupScreen()
         love.window.setMode(0, 0, {fullscreen = true, fullscreentype = "desktop"})
     else
         love.window.setMode(self.width * self.r_scale,
-                            self.height * self.r_scale,
-                            {resizable = true})
+                            self.height * self.r_scale)
     end
     self.r_width  = self.width * self.r_scale
     self.r_height = self.height * self.r_scale
     self.draw_ox  = (love.graphics.getWidth() -  (self.r_width)) / 2
     self.draw_oy  = (love.graphics.getHeight() - (self.r_height)) / 2
+
+    self.cb(self:getParams())
 end
 
 function Viewport:setScale(scale)
@@ -58,9 +61,9 @@ function Viewport:setScale(scale)
                                roundDownToNearest(screen_h / self.height, self.multiple))
 
     if (self.fs or (scale or 0) <= 0 or (scale or 0) > max_scale) then
-        self.r_scale = max_scale
+        self.r_scale = max_scale * love.window.getPixelScale()
     else
-        self.r_scale = scale
+        self.r_scale = scale * love.window.getPixelScale()
     end
 
     return self.r_scale
@@ -132,6 +135,17 @@ function Viewport:setFilter(min, mag, anisotropy)
         self.filter = {min, mag, anisotropy}
     end
     return self.filter
+end
+
+function Viewport:setCallback(cb)
+    if(type(cb) == 'function') then
+        self.cb = cb
+    end
+    return self.cb
+end
+
+function Viewport:getCallback()
+    return self.cb
 end
 
 function Viewport:getParams()
