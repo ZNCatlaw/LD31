@@ -1,12 +1,16 @@
 --
 love.viewport = require('libs/viewport').newSingleton({
-    width = 1280,
-    height = 704,
+    width = conf.window.width,
+    height = conf.window.height,
     multiple = 0.5,
-    filter = {'linear', 'linear', 16},
+    filter = {'linear', 'linear', 8},
     fs = true,
     cb = function(params)
-        if map then map:resize(love.window.getWidth(), love.window.getHeight()) end
+        local pScale = love.window.getPixelScale()
+        if map then
+            map:resize(love.window.getWidth() * pScale,
+                       love.window.getHeight() * pScale)
+        end
     end
 })
 

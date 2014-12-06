@@ -31,15 +31,17 @@ end
 function Viewport:setupScreen()
     self:setScale(self.scale)
     love.graphics.setDefaultFilter(unpack(self:getFilter()))
+    local pScale = love.window.getPixelScale()
     if(self:setFullscreen(self.fs)) then
-        love.window.setMode(0, 0, {fullscreen = true, fullscreentype = "desktop"})
+        love.window.setMode(0, 0, {fullscreen = true, fullscreentype = "desktop", highdpi = true})
     else
-        love.window.setMode(self.width * self.r_scale,
-                            self.height * self.r_scale)
+        love.window.setMode(self.width * self.r_scale / pScale,
+                            self.height * self.r_scale / pScale,
+                            {highdpi = true, resizable = false})
     end
     self.r_width  = self.width * self.r_scale
     self.r_height = self.height * self.r_scale
-    self.draw_ox  = (love.graphics.getWidth() -  (self.r_width)) / 2
+    self.draw_ox  = (love.graphics.getWidth() - (self.r_width)) / 2
     self.draw_oy  = (love.graphics.getHeight() - (self.r_height)) / 2
 
     self.cb(self:getParams())
@@ -50,16 +52,17 @@ function Viewport:setScale(scale)
     self.scale = scale
 
     local screen_w, screen_h = love.window.getDesktopDimensions()
+
     if (not self.fs) then
         -- subtract some height so that windowed mode doesn't scale
         -- beyond titlebar + application bar height in windows
-        screen_w = screen_w - 64
-        screen_h = screen_h - 96
+        screen_w = screen_w - 32
+        screen_h = screen_h - 64
     end
 
-    -- Fix retina scaling
-    screen_w = screen_w * love.window.getPixelScale()
-    screen_h = screen_h * love.window.getPixelScale()
+    local pixel_scale = love.window.getPixelScale()
+    screen_w = screen_w * pixel_scale
+    screen_h = screen_h * pixel_scale
 
     local max_scale = math.min(roundDownToNearest(screen_w / self.width, self.multiple),
                                roundDownToNearest(screen_h / self.height, self.multiple))
@@ -75,16 +78,17 @@ end
 
 function Viewport:fixSize(w, h)
     local screen_w, screen_h = love.window.getDesktopDimensions()
+
     if (not self.fs) then
         -- subtract some height so that windowed mode doesn't scale
         -- beyond titlebar + application bar height in windows
-        screen_w = screen_w - 64
-        screen_h = screen_h - 96
+        screen_w = screen_w - 32
+        screen_h = screen_h - 64
     end
 
-    -- Fix retina scaling
-    screen_w = screen_w * love.window.getPixelScale()
-    screen_h = screen_h * love.window.getPixelScale()
+    local pixel_scale = love.window.getPixelScale()
+    screen_w = screen_w * pixel_scale
+    screen_h = screen_h * pixel_scale
 
     local cur_scale = math.max(roundDownToNearest(w / self.width, self.multiple),
                                roundDownToNearest(h / self.height, self.multiple))
