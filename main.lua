@@ -33,6 +33,9 @@ hump = {
     Vector = require('vendor/hump/vector')
 }
 
+-- Simple Tiled Implementation
+STI = require('vendor/sti')
+
 -- Helper methods
 serialize  = require('vendor/ser')
 inspect    = kikito.inspect
