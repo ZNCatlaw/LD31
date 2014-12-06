@@ -1,4 +1,4 @@
 function love.update(dt)
     --Update here
-    map:update(dt)
+    Gamestate.current():update(dt)
 end

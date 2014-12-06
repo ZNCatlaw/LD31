@@ -32,6 +32,7 @@ hump = {
     Timer  = require('vendor/hump/timer'),
     Vector = require('vendor/hump/vector')
 }
+Gamestate = hump.GS
 
 -- Simple Tiled Implementation
 STI = require('vendor/sti')
