@@ -7,7 +7,7 @@ function love.load()
     game.states.play = require('game/states/play_state')
     game.states.pause = require('game/states/pause_state')
 
-    Gamestate.switch(game.states.splash)
+    Gamestate.switch(game.states.play)
 
     love.viewport = require('libs/viewport').newSingleton({
         width = conf.window.width,
