@@ -4,6 +4,7 @@
    + a draw loop that visualizes the above
 
  - subvert dijkstra's all points shortest path
+   + copy/paste and fix the algorithm
    - generate a matrix with a number of pairs of rooms
      - build the matrix given a list of crew member (name, job) pairs
      - make agents for these rooms from the same data

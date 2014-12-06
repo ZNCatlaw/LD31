@@ -1,4 +1,4 @@
-love.debug.setFlag("all")
+--love.debug.setFlag("all")
 
 function love.update(dt)
 
