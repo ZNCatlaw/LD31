@@ -1,3 +1,3 @@
 function love.draw()
-    Gamestate.draw()
+    return Gamestate.draw()
 end
