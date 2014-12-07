@@ -1,18 +1,5 @@
 function love.load()
-    -- load controls
-    require('game/controls')
-
-    -- load images
-    game.images = require('game/images')
-
-    -- Load(?) sounds
-    require('game/sounds')
-
-    game.states.title = require('game/states/title_state')
-    game.states.play = require('game/states/play_state')
-    game.states.pause = require('game/states/pause_state')
-
-    Gamestate.switch(game.states.title)
+    Gamestate.switch({})
 
     love.viewport = require('libs/viewport').newSingleton({
         width = conf.window.width,
@@ -30,4 +17,6 @@ function love.load()
             end
         end
     })
+
+    require('game')
 end
