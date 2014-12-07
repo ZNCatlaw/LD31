@@ -50,10 +50,16 @@ function state:draw()
     if self.flash then love.graphics.draw(game.images['clicktostart']) end
 end
 
+function state:keypressed(key)
+    if (key == "escape" or key == "q") then
+        love.event.quit()
+    end
+end
+
 function state:mousepressed(x, y, button)
-  if (self.interactive and button == 'l') then
-    Gamestate.switch(game.states.play)
-  end
+    if (self.interactive and button == 'l') then
+        Gamestate.switch(game.states.play)
+    end
 end
 
 --
