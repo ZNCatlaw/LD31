@@ -1,8 +1,8 @@
 local printMatrix = function (matrix)
     local w, h = #matrix, #(matrix[1])
 
-    for i = 1, w do
-        zigspect(matrix[i])
+    for i = 1, h do
+        zigspect(i, matrix[i])
     end
 end
 
@@ -45,6 +45,10 @@ local matrixFromMap = function (map)
     local grid = map.layers.walkable.data
     local w, h = #grid, #(grid[1])
 
+    -- label the nodes
+    local label = 0
+    game.spaceship.graph.matrix.labels = { }
+
     -- iterate over the tiles
     -- naturally y and x are the reverse of what we would
     -- like, so grid is index y, x rather than x, y
@@ -53,10 +57,20 @@ local matrixFromMap = function (map)
             local i = x + w*(y - 1) -- linear index for matrix
 
             if tile then
+                label = label + 1
+                game.spaceship.graph.matrix.labels[i] = label
+
+                -- add a vertex to the adjacencies
+                if game.spaceship.graph.matrix[label] == nil then
+                    game.spaceship.graph.matrix[label] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+                end
+
                 -- next tile x and y
                 local vert = {
                     x = x, y = y,
-                    edges = {}
+                    edges = {},
+                    label = label,
+                    tile_number = x + w*(y - 1)
                 }
 
                 local nx, ny
@@ -64,36 +78,33 @@ local matrixFromMap = function (map)
                 -- check in cardinal directions
 
                 nx = x - 1
-                if insertNeighbour(grid, vert, nx, y) then
-                    local j = nx + w*(y - 1) -- linear index of neighbour for matrix
-
-                    game.spaceship.graph.matrix[i][j] = 1
-                end
+                insertNeighbour(grid, vert, nx, y)
 
                 nx = x + 1
-                if insertNeighbour(grid, vert, nx, y) then
-                    local j = nx + w*(y - 1) -- linear index of neighbour for matrix
-
-                    game.spaceship.graph.matrix[i][j] = 1
-                end
+                insertNeighbour(grid, vert, nx, y)
 
                 ny = y - 1
-                if insertNeighbour(grid, vert, x, ny) then
-                    local j = x + w*(ny - 1) -- linear index of neighbour for matrix
-
-                    game.spaceship.graph.matrix[i][j] = 1
-                end
+                insertNeighbour(grid, vert, x, ny)
 
                 ny = y + 1
-                if insertNeighbour(grid, vert, x, ny) then
-                    local j = x + w*(ny - 1) -- linear index of neighbour for matrix
-
-                    game.spaceship.graph.matrix[i][j] = 1
-                end
+                insertNeighbour(grid, vert, x, ny)
 
                 local name = true and getName(tile) or x .. y
                 game.spaceship.graph.verts[name] = vert
             end
+        end
+    end
+
+    -- populate the adjacency matrix
+    for i, vert in pairs(game.spaceship.graph.verts) do
+        local index = vert.label
+
+        for j, edge_name in pairs(vert.edges) do
+            local edge = game.spaceship.graph.verts[edge_name]
+
+            local edge_label = edge.label
+
+            game.spaceship.graph.matrix[index][edge_label] = 1
         end
     end
 end
@@ -193,7 +204,6 @@ function love.load()
     })
 
 
-    --zigspect(shortestPath(matrix, 1, 3))
 
     local NORTH = { dx = 0, dy = -1 }
     local EAST = { dx = 1, dy = 0 }
@@ -202,7 +212,6 @@ function love.load()
 
     game.test_map = {}
     game.spaceship = {}
-
 
     -- each point on the graph contains directions
     -- to each other point (of interest) on the graph
@@ -221,7 +230,7 @@ function love.load()
     -- and then use the positions of this room and that room to determine direction
     --
     game.spaceship.graph = {}
-    game.spaceship.graph.matrix = zeroMatrix(50*50, 50*50)
+    game.spaceship.graph.matrix = {}
     game.spaceship.graph.verts = {
         engineering = {
             x = 100,
@@ -279,6 +288,11 @@ function love.load()
 
     game.spaceship.graph.verts = {}
     matrixFromMap(Gamestate.current().map)
+
+    local start = game.spaceship.graph.verts["engineering"].label
+    local finish = game.spaceship.graph.verts["q1"].label
+
+    zigspect(shortestPath(game.spaceship.graph.matrix, start, finish))
 
     game.spaceship.crew = {}
     table.insert(game.spaceship.crew, {

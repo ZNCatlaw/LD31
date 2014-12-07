@@ -1,7 +1,7 @@
 local state = {}
 
 function state:init()
-    self.map = STI.new('assets/maps/test_tileset')
+    self.map = STI.new('assets/maps/simple_test')
 
     -- Set map and tileset filters
     local filter = conf.defaultImageFilter
