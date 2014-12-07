@@ -391,6 +391,8 @@ function state:init()
 end
 
 function state:enter()
+    self.ship = game.classes.Ship.new({stations = game.data.stations,
+                                       crew = game.data.starting_crew})
 end
 
 function state:leave()
@@ -441,6 +443,8 @@ function state:update(dt)
         end
     end
     ]]
+
+    self.ship:update(dt)
 
     for _,star in ipairs(self.stars) do
         star.offset = star.offset + dt^star.velocity
