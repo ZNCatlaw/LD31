@@ -1,6 +1,11 @@
 function love.load()
+    -- load controls
     require('game/controls')
-    require('game/images')
+
+    -- load images
+    game.images = require('game/images')
+
+    -- Load(?) sounds
     require('game/sounds')
 
     game.states.title = require('game/states/title_state')
