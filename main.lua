@@ -70,7 +70,7 @@ game = {
 --   Exports:
 --     love.debug, etc. (see file)
 require('love/debug')
-love.debug.setFlag('all') -- Comment this out to stop seeing everything.
+-- love.debug.setFlag('all') -- Comment this out to stop seeing everything.
 
 -- load.lua -- Loaded on game start
 --   Exports:
@@ -115,3 +115,5 @@ require('love/misc')
 --   Exports:
 --     love.run()
 require('love/run')
+
+zigspect = love.debug.print
