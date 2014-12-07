@@ -2,11 +2,10 @@ local directionFromDifference = function (from, to)
     local x = to.x - from.x
     local y = to.y - from.y
 
-    zigspect(DIRECTIONS[x][y])
     return DIRECTIONS[x][y]
 end
 
-local createSignPosts = function (graph, matrix, path, start, finish)
+local createSignPosts = function (graph, matrix, path, finish)
     -- start at path[finish] and create the direction from finish to path[finish]
     -- then next is path[finish] to path[finish[finish]]
 
@@ -143,7 +142,7 @@ end
 
 -- given an adjacency matrix A[][] returns a table
 -- P containing the shortest path from nodes a to b
-local shortestPath = function (adjacencies, a, b)
+local shortestPath = function (adjacencies, a)
     local visited, d = {}, {}
     local path = {}
 
@@ -199,8 +198,6 @@ local shortestPath = function (adjacencies, a, b)
                         d[j] = d[v] + adjacencies[v][j]
                         path[j] = v
                     end
-
-                    if j == b then return path end
                 end
             end
         end
@@ -333,33 +330,45 @@ function love.load()
     game.spaceship.graph.verts = {}
     matrixFromMap(Gamestate.current().map)
 
+    local named_verts = {}
+    for key, vert in pairs(game.spaceship.graph.verts) do
+
+        -- collect the named verts
+        if tonumber(key) == nil then
+            table.insert(named_verts, vert)
+        end
+    end
+
+    -- for every named vert
+    for i, finish in pairs(named_verts) do
+
+        -- find all the shortest paths to it
+        local path = shortestPath(game.spaceship.graph.matrix, finish.label)
+
+        -- and then for every other named vert
+        -- create a path of sign posts
+        for j, start in pairs(named_verts) do
+
+            if start ~= finish then
+                createSignPosts(game.spaceship.graph.verts, game.spaceship.graph.matrix, path, start)
+            end
+        end
+    end
+
     local start = game.spaceship.graph.verts["engineering"]
     local finish = game.spaceship.graph.verts["q1"]
-
-    printMatrix(game.spaceship.graph.matrix)
-    local path = shortestPath(game.spaceship.graph.matrix, start.label, finish.label)
-    zigspect(path)
-
-    createSignPosts(game.spaceship.graph.verts, game.spaceship.graph.matrix, path, start, finish)
-
-    path = shortestPath(game.spaceship.graph.matrix, finish.label, start.label)
-    zigspect(path)
-
-    createSignPosts(game.spaceship.graph.verts, game.spaceship.graph.matrix, path, finish, start)
-
-    zigspect(game.spaceship.graph.verts)
 
     game.spaceship.crew = {}
     table.insert(game.spaceship.crew, {
         name = "engineer",
         x = start.x * 16,
         y = start.y * 16,
-        speed = 8,
+        speed = 16,
         boredom = 0,
         station = "engineering",
         working = true,
         quarters = "q1",
-        destination = "engineering",
+        destination = "q1",
         current = "engineering",
         next = nil
     })
@@ -368,12 +377,12 @@ function love.load()
         name = "bob",
         x = finish.x * 16,
         y = finish.y * 16,
-        speed = 8,
+        speed = 16,
         boredom = 0,
-        station = "bobbing",
+        station = "q1",
         working = true,
         quarters = "engineering",
-        destination = "q1",
+        destination = "engineering",
         current = "q1",
         next = nil
     })

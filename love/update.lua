@@ -7,17 +7,6 @@ function love.update(dt)
 
         love.debug.printIf("crew", crew.boredom)
 
-        if crew.boredom >= 1 then
-            crew.boredom = 1
-            -- choose a new destination
-
-            crew.destination = crew.quarters
-
-        elseif crew.working == true then
-
-            crew.boredom = crew.boredom + dt
-        end
-
         if crew.destination ~= crew.current then
             -- TODO need to also check whether crew.direction is the same as crew.current at crew.destination
             -- in case someone changes their mind mid-path
@@ -47,6 +36,8 @@ function love.update(dt)
                     love.debug.printIf("next", crew.current)
                 end
             end
+        else
+            crew.destination = crew.station
         end
     end
 
