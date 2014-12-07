@@ -1,3 +1,25 @@
+local printMatrix = function (matrix)
+    local w, h = #matrix, #(matrix[1])
+
+    for i = 1, w do
+        zigspect(matrix[i])
+    end
+end
+
+local zeroMatrix = function (w, h)
+    local matrix = {}
+
+    for i = 1, w do
+        matrix[i] = {}
+
+        for j = 1, h do
+            matrix[i][j] = 0
+        end
+    end
+
+    return matrix
+end
+
 local getName = function (tile)
     local name = nil
 
@@ -8,14 +30,27 @@ local getName = function (tile)
     return name
 end
 
+local insertNeighbour = function (grid, vert, x, y)
+    if x < 1 or y < 1 or x > #grid or y > #(grid[1]) then return false end
+    if grid[y][x] == false then return false end
+
+    local name = true and getName(grid[y][x]) or x .. y
+
+    table.insert(vert.edges, name)
+
+    return true
+end
+
 local matrixFromMap = function (map)
     local grid = map.layers.walkable.data
     local w, h = #grid, #(grid[1])
 
     -- iterate over the tiles
+    -- naturally y and x are the reverse of what we would
+    -- like, so grid is index y, x rather than x, y
     for y, tile_row in ipairs(grid) do
-
         for x, tile in ipairs(tile_row) do
+            local i = x + w*(y - 1) -- linear index for matrix
 
             if tile then
                 -- next tile x and y
@@ -29,43 +64,31 @@ local matrixFromMap = function (map)
                 -- check in cardinal directions
 
                 nx = x - 1
-                if nx > 1 then
+                if insertNeighbour(grid, vert, nx, y) then
+                    local j = nx + w*(y - 1) -- linear index of neighbour for matrix
 
-                    if grid[y][nx] ~= false then
-                        local name = true and getName(grid[y][nx]) or nx .. y
-
-                        table.insert(vert.edges, name)
-                    end
+                    game.spaceship.graph.matrix[i][j] = 1
                 end
 
                 nx = x + 1
-                if nx < w then
+                if insertNeighbour(grid, vert, nx, y) then
+                    local j = nx + w*(y - 1) -- linear index of neighbour for matrix
 
-                    if grid[y][nx] ~= false then
-                        local name = true and getName(grid[y][nx]) or nx .. y
-
-                        table.insert(vert.edges, name)
-                    end
+                    game.spaceship.graph.matrix[i][j] = 1
                 end
 
                 ny = y - 1
-                if ny > 1 then
+                if insertNeighbour(grid, vert, x, ny) then
+                    local j = x + w*(ny - 1) -- linear index of neighbour for matrix
 
-                    if grid[ny][x] ~= false then
-                        local name = true and getName(grid[ny][x]) or x .. ny
-
-                        table.insert(vert.edges, name)
-                    end
+                    game.spaceship.graph.matrix[i][j] = 1
                 end
 
                 ny = y + 1
-                if ny < h then
+                if insertNeighbour(grid, vert, x, ny) then
+                    local j = x + w*(ny - 1) -- linear index of neighbour for matrix
 
-                    if grid[ny][x] ~= false then
-                        local name = true and getName(grid[ny][x]) or x .. ny
-
-                        table.insert(vert.edges, name)
-                    end
+                    game.spaceship.graph.matrix[i][j] = 1
                 end
 
                 local name = true and getName(tile) or x .. y
@@ -198,6 +221,7 @@ function love.load()
     -- and then use the positions of this room and that room to determine direction
     --
     game.spaceship.graph = {}
+    game.spaceship.graph.matrix = zeroMatrix(50*50, 50*50)
     game.spaceship.graph.verts = {
         engineering = {
             x = 100,
@@ -254,7 +278,7 @@ function love.load()
     }
 
     game.spaceship.graph.verts = {}
-    local matrix = matrixFromMap(Gamestate.current().map)
+    matrixFromMap(Gamestate.current().map)
 
     game.spaceship.crew = {}
     table.insert(game.spaceship.crew, {
