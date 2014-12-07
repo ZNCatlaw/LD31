@@ -98,7 +98,7 @@ end
 function SoundMan:add(name, command, source, tags, ...)
     tags = table.concat({name, ';', tags})
     self.shortcuts[name] = {command, source, tags, unpack({...})}
-    self:sendCommand({'touchResource', source})
+    self:sendCommand({'touchResource', source, tags, unpack({...})})
     return self.shortcuts[name]
 end
 

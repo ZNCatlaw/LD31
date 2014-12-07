@@ -4,7 +4,7 @@ local timer = hump.Timer.new()
 local drawImages = {}
 
 local function playTitleMusic()
-  love.soundman.run('titleMusic1')
+  TEsound.playLooping("assets/sounds/music-roygbiv.mp3", "music")
 end
 
 function state:init()
@@ -21,7 +21,7 @@ end
 
 function state:leave()
     timer.clear()
-    love.soundman.stop('titleMusic1')
+    TEsound.stop('music')
 end
 
 function state:resume()
