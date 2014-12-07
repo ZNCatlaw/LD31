@@ -1,3 +1,13 @@
+local getName = function (tile)
+    local name = nil
+
+    if tile.properties and tile.properties.name then
+        name = tile.properties.name
+    end
+
+    return name
+end
+
 local matrixFromMap = function (map)
     local grid = map.layers.walkable.data
     local w, h = #grid, #(grid[1])
@@ -22,7 +32,9 @@ local matrixFromMap = function (map)
                 if nx > 1 then
 
                     if grid[y][nx] ~= false then
-                        table.insert(vert.edges, nx .. y)
+                        local name = true and getName(grid[y][nx]) or nx .. y
+
+                        table.insert(vert.edges, name)
                     end
                 end
 
@@ -30,7 +42,9 @@ local matrixFromMap = function (map)
                 if nx < w then
 
                     if grid[y][nx] ~= false then
-                        table.insert(vert.edges, nx .. y)
+                        local name = true and getName(grid[y][nx]) or nx .. y
+
+                        table.insert(vert.edges, name)
                     end
                 end
 
@@ -38,7 +52,9 @@ local matrixFromMap = function (map)
                 if ny > 1 then
 
                     if grid[ny][x] ~= false then
-                        table.insert(vert.edges, x .. ny)
+                        local name = true and getName(grid[ny][x]) or x .. ny
+
+                        table.insert(vert.edges, name)
                     end
                 end
 
@@ -46,11 +62,14 @@ local matrixFromMap = function (map)
                 if ny < h then
 
                     if grid[ny][x] ~= false then
-                        table.insert(vert.edges, x .. ny)
+                        local name = true and getName(grid[ny][x]) or x .. ny
+
+                        table.insert(vert.edges, name)
                     end
                 end
 
-                game.spaceship.graph.verts[x .. y] = vert
+                local name = true and getName(tile) or x .. y
+                game.spaceship.graph.verts[name] = vert
             end
         end
     end
