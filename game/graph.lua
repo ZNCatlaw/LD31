@@ -17,14 +17,15 @@ DIRECTIONS[1][0] = EAST
 
 local Graph, metatable = Class.new('Graph' )
 
-local getName = function (tile)
+local getName = function (grid, x, y)
     local name = nil
+    local tile = grid[y][x]
 
     if tile.properties and tile.properties.name then
         name = tile.properties.name
     end
 
-    return name
+    return name == "path" and tostring(x + (#grid)*(y - 1)) or name
 end
 
 -- checks whether the given coords are on the given tilemap
@@ -33,7 +34,7 @@ local insertNeighbour = function (grid, vert, x, y)
     if x < 1 or y < 1 or x > #(grid[1]) or y > #grid then return false end
     if grid[y][x] == false then return false end
 
-    local name = true and getName(grid[y][x]) or tostring(x + (#grid)*(y - 1))
+    local name = getName(grid, x, y)
 
     table.insert(vert.edges, name)
 
@@ -172,7 +173,7 @@ local function buildVerts (map)
                     tile_number = x + w*(y - 1)
                 }
 
-                local name = true and getName(tile) or tostring(vert.tile_number)
+                local name = getName(grid, x, y)
                 vert.name = name
 
                 local nx, ny
