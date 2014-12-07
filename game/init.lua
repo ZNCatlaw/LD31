@@ -1,8 +1,6 @@
-game.Ship = require('game/ship')
-game.Station = require('game/station')
-game.Crew = require('game/crew')
-
+game.classes = require('game/classes')
 game.images = require('game/images')
+game.data = require('game/data')
 game.states = require('game/states')
 
 Gamestate.switch(game.states.title)

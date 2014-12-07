@@ -208,9 +208,8 @@ local shortestPath = function (adjacencies, a)
     return path
 end
 
-
 function state:init()
-    self.map = STI.new('assets/maps/simple_test')
+    self.map = STI.new('assets/maps/test')
 
     -- Set map and tileset filters
     local filter = conf.defaultImageFilter
@@ -218,6 +217,9 @@ function state:init()
     for _,v in ipairs(self.map.tilesets) do
         v.image:setFilter(unpack(filter))
     end
+
+    -- ZIGGY THINGS
+    --[[
 
     NORTH = { dx = 0, dy = -1 }
     EAST = { dx = 1, dy = 0 }
@@ -370,6 +372,8 @@ function state:init()
         next = nil
     })
 
+    ]]
+
     local stars = {}
     local nStars = 400
     for i = 1,nStars do
@@ -387,6 +391,8 @@ function state:init()
 end
 
 function state:enter()
+    self.ship = game.classes.Ship.new({stations = game.data.stations,
+                                       crew = game.data.starting_crew})
 end
 
 function state:leave()
@@ -397,6 +403,7 @@ end
 
 function state:update(dt)
     --Update here
+    --[[
     for i = #(game.spaceship.crew), 1, -1 do
         local crew = game.spaceship.crew[i]
 
@@ -435,6 +442,9 @@ function state:update(dt)
             crew.destination = crew.station
         end
     end
+    ]]
+
+    self.ship:update(dt)
 
     for _,star in ipairs(self.stars) do
         star.offset = star.offset + dt^star.velocity
@@ -455,6 +465,7 @@ function state:draw()
     self.map:draw()
     local map = self.map
 
+    --[[
     for i, vert in pairs(game.spaceship.graph.verts) do
 
         love.graphics.circle("line", vert.x*16, vert.y*16, 2)
@@ -471,7 +482,7 @@ function state:draw()
 
         love.graphics.circle("fill", crew.x, crew.y, 10)
     end
-
+    ]]
 end
 
 --
