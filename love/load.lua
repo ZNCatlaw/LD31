@@ -1,3 +1,61 @@
+local matrixFromMap = function (map)
+    local grid = map.layers.walkable.data
+    local w, h = #grid, #(grid[1])
+
+    -- iterate over the tiles
+    for y, tile_row in ipairs(grid) do
+
+        for x, tile in ipairs(tile_row) do
+
+            if tile then
+                -- next tile x and y
+                local vert = {
+                    x = x, y = y,
+                    edges = {}
+                }
+
+                local nx, ny
+
+                -- check in cardinal directions
+
+                nx = x - 1
+                if nx > 1 then
+
+                    if grid[y][nx] ~= false then
+                        table.insert(vert.edges, nx .. y)
+                    end
+                end
+
+                nx = x + 1
+                if nx < w then
+
+                    if grid[y][nx] ~= false then
+                        table.insert(vert.edges, nx .. y)
+                    end
+                end
+
+                ny = y - 1
+                if ny > 1 then
+
+                    if grid[ny][x] ~= false then
+                        table.insert(vert.edges, x .. ny)
+                    end
+                end
+
+                ny = y + 1
+                if ny < h then
+
+                    if grid[ny][x] ~= false then
+                        table.insert(vert.edges, x .. ny)
+                    end
+                end
+
+                game.spaceship.graph.verts[x .. y] = vert
+            end
+        end
+    end
+end
+
 -- given an adjacency matrix A[][] returns a table
 -- P containing the shortest path from nodes a to b
 local shortestPath = function (adjacencies, a, b)
@@ -92,23 +150,17 @@ function love.load()
         end
     })
 
-    local matrix = {
-    --    1  2  3  4
-        { 0, 1, 0, 1, 0 },
-        { 1, 0, 1, 0, 0 },
-        { 0, 1, 0, 0, 1 },
-        { 1, 0, 0, 0, 1 },
-        { 0, 0, 1, 1, 0 }
-    }
 
-    zigspect(shortestPath(matrix, 1, 3))
+    --zigspect(shortestPath(matrix, 1, 3))
 
     local NORTH = { dx = 0, dy = -1 }
     local EAST = { dx = 1, dy = 0 }
     local SOUTH = { dx = 0, dy = 1 }
     local WEST = { dx = -1, dy = 0 }
 
+    game.test_map = {}
     game.spaceship = {}
+
 
     -- each point on the graph contains directions
     -- to each other point (of interest) on the graph
@@ -181,6 +233,9 @@ function love.load()
             }
         }
     }
+
+    game.spaceship.graph.verts = {}
+    local matrix = matrixFromMap(Gamestate.current().map)
 
     game.spaceship.crew = {}
     table.insert(game.spaceship.crew, {

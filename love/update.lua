@@ -7,7 +7,7 @@ function love.update(dt)
 
         love.debug.printIf("crew", crew.boredom)
 
-        if crew.boredom >= 1 then
+        if crew.boredom >= 100000 then
             crew.boredom = 1
             -- choose a new destination
 
