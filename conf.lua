@@ -6,6 +6,7 @@ function love.conf(t)
     t.window.width = 1280
     t.window.height = 704
     t.window.highdpi = true
+    t.window.fsaa = 2
 
     t.defaultImageFilter = {'linear', 'linear', 8}
 
