@@ -34,6 +34,9 @@ hump = {
 }
 Gamestate = hump.GS
 
+-- TESound
+require('vendor/TESound')
+
 -- Simple Tiled Implementation
 STI = require('vendor/sti')
 
