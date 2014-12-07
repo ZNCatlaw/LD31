@@ -1,4 +1,5 @@
 function love.draw()
+    local map = Gamestate.draw()
 
     for i, vert in pairs(game.spaceship.graph.verts) do
 
@@ -17,5 +18,5 @@ function love.draw()
         love.graphics.circle("fill", crew.x, crew.y, 10)
     end
 
-    return Gamestate.draw()
+    return map
 end
