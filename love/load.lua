@@ -1,8 +1,30 @@
+local directionFromDifference = function (from, to)
+    local x = to.x - from.x
+    local y = to.y - from.y
+
+    return DIRECTIONS[x][y]
+end
+
+local createSignPosts = function (graph, matrix, path, start, finish)
+
+    for v, p in pairs(path) do
+        local from = graph[matrix.map[v]]
+        local to = graph[matrix.map[p]]
+
+        from.directions = {}
+
+        from.directions[finish.name] = {
+            key = to.name,
+            direction = directionFromDifference(from, to)
+        }
+    end
+end
+
 local printMatrix = function (matrix)
     local w, h = #matrix, #(matrix[1])
 
     for i = 1, h do
-        zigspect(i, matrix[i])
+        zigspect(i, matrix.map[i], matrix[i])
     end
 end
 
@@ -34,7 +56,9 @@ local insertNeighbour = function (grid, vert, x, y)
     if x < 1 or y < 1 or x > #grid or y > #(grid[1]) then return false end
     if grid[y][x] == false then return false end
 
-    local name = true and getName(grid[y][x]) or x .. y
+    local name = true and getName(grid[y][x]) or tostring(x + (#grid)*(y - 1))
+
+    zigspect("insertNeighbour", vert.tile_number, "has neighbour",  name)
 
     table.insert(vert.edges, name)
 
@@ -47,18 +71,16 @@ local matrixFromMap = function (map)
 
     -- label the nodes
     local label = 0
-    game.spaceship.graph.matrix.labels = { }
+    game.spaceship.graph.matrix.map = {}
 
     -- iterate over the tiles
     -- naturally y and x are the reverse of what we would
     -- like, so grid is index y, x rather than x, y
     for y, tile_row in ipairs(grid) do
         for x, tile in ipairs(tile_row) do
-            local i = x + w*(y - 1) -- linear index for matrix
 
             if tile then
                 label = label + 1
-                game.spaceship.graph.matrix.labels[i] = label
 
                 -- add a vertex to the adjacencies
                 if game.spaceship.graph.matrix[label] == nil then
@@ -89,8 +111,12 @@ local matrixFromMap = function (map)
                 ny = y + 1
                 insertNeighbour(grid, vert, x, ny)
 
-                local name = true and getName(tile) or x .. y
+                local name = true and getName(tile) or tostring(vert.tile_number)
+                vert.name = name
                 game.spaceship.graph.verts[name] = vert
+
+                -- map to recover vert names from graph labels after dijkstra returns
+                game.spaceship.graph.matrix.map[label] = name
             end
         end
     end
@@ -205,10 +231,20 @@ function love.load()
 
 
 
-    local NORTH = { dx = 0, dy = -1 }
-    local EAST = { dx = 1, dy = 0 }
-    local SOUTH = { dx = 0, dy = 1 }
-    local WEST = { dx = -1, dy = 0 }
+    NORTH = { dx = 0, dy = -1 }
+    EAST = { dx = 1, dy = 0 }
+    SOUTH = { dx = 0, dy = 1 }
+    WEST = { dx = -1, dy = 0 }
+
+    DIRECTIONS = { }
+    DIRECTIONS[-1] = { }
+    DIRECTIONS[0] = { }
+    DIRECTIONS[1] = { }
+
+    DIRECTIONS[-1][0] = WEST
+    DIRECTIONS[0][-1] = NORTH
+    DIRECTIONS[0][1] = SOUTH
+    DIRECTIONS[1][0] = EAST
 
     game.test_map = {}
     game.spaceship = {}
@@ -289,21 +325,24 @@ function love.load()
     game.spaceship.graph.verts = {}
     matrixFromMap(Gamestate.current().map)
 
-    local start = game.spaceship.graph.verts["engineering"].label
-    local finish = game.spaceship.graph.verts["q1"].label
+    local start = game.spaceship.graph.verts["engineering"]
+    local finish = game.spaceship.graph.verts["q1"]
 
-    zigspect(shortestPath(game.spaceship.graph.matrix, start, finish))
+    printMatrix(game.spaceship.graph.matrix)
+    local path = shortestPath(game.spaceship.graph.matrix, start.label, finish.label)
+
+    createSignPosts(game.spaceship.graph.verts, game.spaceship.graph.matrix, path, start, finish)
 
     game.spaceship.crew = {}
     table.insert(game.spaceship.crew, {
         name = "engineer",
-        x = 100,
-        y = 100,
-        speed = 50,
+        x = start.x * 16,
+        y = start.y * 16,
+        speed = 8,
         boredom = 0,
         station = "engineering",
         working = true,
-        quarters = "q1", -- TODO need a clever labelling for quarters
+        quarters = "q1",
         destination = "engineering",
         current = "engineering",
         next = nil

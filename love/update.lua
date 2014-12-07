@@ -7,7 +7,7 @@ function love.update(dt)
 
         love.debug.printIf("crew", crew.boredom)
 
-        if crew.boredom >= 100000 then
+        if crew.boredom >= 1 then
             crew.boredom = 1
             -- choose a new destination
 
@@ -24,27 +24,23 @@ function love.update(dt)
             --
             -- wander off
 
-            local next = game.spaceship.graph.verts[crew.current].directions[crew.destination]
-            local direction = next.direction
+            local next_node = game.spaceship.graph.verts[crew.current]
+            local directions = next_node.directions[crew.destination]
+            local direction = directions.direction
 
             -- update position
-            love.debug.printIf("current", crew.current)
-            love.debug.printIf("next", next.key)
-            love.debug.printIf("next", next.direction)
 
             crew.x = crew.x + crew.speed*direction.dx*dt
             crew.y = crew.y + crew.speed*direction.dy*dt
 
             -- recover the next room's vertex
-            next_vert = game.spaceship.graph.verts[next.key]
+            next_vert = game.spaceship.graph.verts[directions.key]
 
             -- if we've arrived, update current
-            local sq_distance = math.pow(crew.x - next_vert.x, 2) + math.pow(crew.y - next_vert.y, 2)
-
-            love.debug.printIf("d", sq_distance)
+            local sq_distance = math.pow(crew.x - next_vert.x*16, 2) + math.pow(crew.y - next_vert.y*16, 2)
 
             if sq_distance < 1 then
-                crew.current = next.key
+                crew.current = directions.key
                 love.debug.printIf("next", crew.current)
             end
         end
