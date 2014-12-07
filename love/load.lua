@@ -58,8 +58,6 @@ local insertNeighbour = function (grid, vert, x, y)
 
     local name = true and getName(grid[y][x]) or tostring(x + (#grid)*(y - 1))
 
-    zigspect("insertNeighbour", vert.tile_number, "has neighbour",  name)
-
     table.insert(vert.edges, name)
 
     return true
@@ -154,7 +152,7 @@ local shortestPath = function (adjacencies, a, b)
         end
     end
 
-    visited[1] = 1
+    visited[a] = 1
 
     for i = 1, #adjacencies do
         local v   = nil
