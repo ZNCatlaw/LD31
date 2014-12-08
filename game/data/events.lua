@@ -5,10 +5,11 @@ local operator_barks = {
 }
 
 local event_messages = {
-    scientist = "",
-    operator = "",
-    cto = "",
-    captain = ""
+    scientist = "science problems",
+    operator = "teleporter problems",
+    engineer = "engine problems",
+    cto = "technology problems",
+    captain = "captaincy problems"
 }
 
 -- returns a random bark from the operator
@@ -17,31 +18,31 @@ local function operatorBark ()
 end
 
 local function damageShip ()
-    zigspect("DAMAGE TO SHIP")
+    return "DAMAGE TO SHIP"
 end
 
 local function damageSnowman ()
-    zigspect("DAMAGE TO SNOWMAN")
+    return "DAMAGE TO SNOWMAN"
 end
 
 local events = {
     scientist = {
-        success = "yay",
+        success = "science, yay!",
         fail = damageShip
 
     },
     engineer = {
-        success = "yay",
+        success = "engineering, yay!",
         fail = damageShip
 
     },
     captain = {
-        success = "yay",
+        success = "captaincy, yay!",
         fail = damageShip
 
     },
     cto = {
-        success = "yay",
+        success = "technology, yay!",
         fail = damageSnowman
 
     },
@@ -54,6 +55,7 @@ local events = {
 events.timer = hump.Timer.new()
 events.will_resolve = false
 events.current = nil
+events.averted = false
 
 -- a random event gets scheduled
 function events:scheduleEvent (crew)
@@ -70,11 +72,17 @@ function events:setWillResolve (will_resolve)
 end
 
 function events:update (dt)
-    if self:hasEvent() and self:willResolve() --[[ this is a countdown ]] then
-        self:resolve() -- this behaviour is set in crew update, either relief or damage
-    else
+    local has_event = self:hasEvent()
+
+    if has_event and self:willResolve() --[[ this is a countdown ]] then
+        local resolution = self:resolve() -- this behaviour is set in crew update, either relief or damage
+
+        love.debug.printIf("events", "resolution:", resolution)
+    elseif has_event == false then
         -- if there is no current event, try to schedule one
         self:scheduleEvent(game.classes.Crew.randomName())
+
+        love.debug.printIf("events", "scheduled:", self.message)
     end
 
     self.timer.update(dt)
@@ -88,12 +96,51 @@ function events:willResolve ()
     return self.will_resolve
 end
 
-function events:resolve ()
-    result = events[self.current].fail()
+function events:setAverted (averted, crew)
+    self.agent = crew
+    self.agent:setWaiting(true)
+
+    self.averted = averted
+end
+
+function events:reset ()
     self.timer.clear()
+    self.averted = false
+    self.agent = nil
     self.will_resolve = false
     self.current = nil
     self.message = nil
+end
+
+function events:getEvent ()
+    if self:hasEvent() == false then return nil end
+
+    return {
+        station = self.current
+    }
+end
+
+function events:resolve ()
+    local result = nil
+
+    if self.averted then
+        -- just return the bark
+        if type(events[self.current].success) == "function" then
+            result = events[self.current].success() -- operator barks etc
+        else
+            result = events[self.current].success
+        end
+
+        self.agent:setWaiting(false)
+    else
+        if type(events[self.current].fail) == "function" then
+            result = events[self.current].fail()
+        else
+            result = events[self.current].fail
+        end
+    end
+
+    self:reset()
 
     return result
 end

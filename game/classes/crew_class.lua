@@ -52,9 +52,16 @@ function class:setDirection (direction)
     self.direction = direction
 end
 
+function class:setWaiting (waiting)
+    self.waiting = waiting
+end
+
+function class:isWaiting ()
+    return self.is_waiting
+end
+
 function class:accrueBoredom (current_task, dt)
     -- TODO check for conditions that cause boredom to accrue faster, like scientist in a crowded room
-    
     local rate = game.data.tasks.config.rate
     local time_dilation = game.data.tasks.config.time_dilation
     local check_frequency = game.data.tasks.config.check_frequency
@@ -107,6 +114,7 @@ function class:setDestination(destination)
 end
 
 function class:update(dt)
+
     love.debug.printIf("crew_class", self.name, self.destination, self.location, self.current_task.name)
 
     if self.destination ~= self.location then
@@ -135,24 +143,10 @@ function class:update(dt)
         -- accrueboredom and determine possible next task
         local next_task = self:accrueBoredom(self.current_task, dt)
 
---      -- work, download porn, what-have you
---      self.current_task:perform(function ()
---          -- TODO move this code to the perform method
---          -- if current_task is work
---          if self.current_task == "work" and game.events:hasEvents() then
---              local event = game.events:getEvent()
+        if self:isWaiting() then return end
 
---              -- TODO shouldn't work if you aren't in the right location
-
---              if event.station == self.name then
---                  game.event:setAverted(true) -- prevent the event
---                  -- TODO this should cause a flag to get set in the crew, so that they
---                  -- remain at the event location for a few ticks before ever checking
---                  -- for boredom again: this is so that they won't just bullet bounce
---                  -- off the event room like PING
---              end
---          end
---      end)
+        -- work, download porn, what-have you
+        self.current_task:perform(self)
 
 --      -- snowman's alerts can override natural switching of tasks
 --      -- if the work task is less boring than the current task
