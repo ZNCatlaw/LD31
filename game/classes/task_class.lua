@@ -39,7 +39,7 @@ local getPornLocation = function (self, crew_name)
 end
 
 local getWanderLocation = function (self, crew_name)
-    local location = game.classes.Crew.randomName()
+    local location = game.classes.Station.randomStation()
 
     return findAvailableSpot(location)
 end
@@ -95,11 +95,11 @@ end
 local performWander = function (self, crew)
     if crew.name == "cto" then
         -- debug the current location
-        game.ship.stations[crew.name]:debug()
+        game.ship.stations[crew.location]:debug()
 
     elseif crew.name == "engineer" then
         -- repair the current location
-        game.ship.stations[crew.name]:repair()
+        game.ship.stations[crew.location]:repair()
     end
 end
 

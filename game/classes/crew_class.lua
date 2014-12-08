@@ -2,6 +2,8 @@ local class = Class.new('Crew')
 
 class.names = Set.new()
 
+--love.debug.setFlag("crew_class")
+
 function class:initialize(name, data)
     class.names:add(name)
 
@@ -161,9 +163,9 @@ function class:update(dt)
         -- walk in the current direction
         self.progress = self.progress + (dt * self.walkspeed)
 
-        love.debug.unsetFlag("boredom")
+        --love.debug.unsetFlag("boredom")
         self:accrueBoredom(self.current_task, dt)
-        love.debug.setFlag("boredom")
+        --love.debug.setFlag("boredom")
 
         if self.progress > 1 then
             self.progress = 0
