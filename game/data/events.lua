@@ -19,10 +19,12 @@ end
 
 -- TODO station should be chosen randomly
 local function damageShip (station)
+    zigspect("event#damageShip", station)
+
     game.ship.stations[station]:damage()
     zigspect(game.ship.damage, game.ship.corruption)
 
-    return "DAMAGE TO SHIP"
+    return "DAMAGE TO " .. station
 end
 
 local function damageSnowman ()
@@ -143,7 +145,7 @@ function events:resolve ()
         self.agent:setWaiting(false)
     else
         if type(events[self.current].fail) == "function" then
-            result = events[self.current].fail(self.current)
+            result = events[self.current].fail(game.classes.Station.randomStation())
         else
             result = events[self.current].fail
         end

@@ -1,5 +1,17 @@
 local class = Class.new('Station')
 
+class.names = {
+    "captain", "cto", "engineer", "scientist", "quarters", "operator", "airlock"
+}
+
+function class.randomStation ()
+    local size = #(class.names)
+
+    local index = love.math.random(1, size)
+
+    return class.names[index]
+end
+
 function class:initialize(name, data)
     self.name = name
     self.length = data.length or 8
@@ -20,35 +32,44 @@ function class:isDamaged()
 end
 
 function class:damage()
-    self._damage = true
 
-    if game.ship.damage < 7 then
-        game.ship.damage = game.ship.damage + 1
+    if self._damage == false then
+        if game.ship.damage < 7 then
+            game.ship.damage = game.ship.damage + 1
+        end
     end
+
+    self._damage = true
 end
 
 function class:repair()
-    self._damage = false
-
-    if game.ship.damage > 0 then
-        game.ship.damage = game.ship.damage - 1
+    if self._damage == true then
+        if game.ship.damage > 0 then
+            game.ship.damage = game.ship.damage - 1
+        end
     end
+
+    self._damage = false
 end
 
 function class:malfunction()
-    self.corrupt = true
-
-    if game.ship.corruption < 7 then
-        game.ship.corruption = game.ship.corruption + 1
+    if self.corrupt == false then
+        if game.ship.corruption < 7 then
+            game.ship.corruption = game.ship.corruption + 1
+        end
     end
+
+    self.corrupt = true
 end
 
 function class:repair()
-    self.corrupt = false
-
-    if game.ship.corruption > 0 then
-        game.ship.corruption = game.ship.corruption - 1
+    if self.corrupt == true then
+        if game.ship.corruption > 0 then
+            game.ship.corruption = game.ship.corruption - 1
+        end
     end
+
+    self.corrupt = false
 end
 
 function class:update(dt)

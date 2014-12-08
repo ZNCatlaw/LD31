@@ -24,6 +24,7 @@ function class:initialize(name, data)
     self.location = name
 
     self.current_task = self.tasks[self.initial_task]
+    game.map.layers[self.name .. '_on'].visible = true
 
     self:setDirection(DIRECTIONS[0][1])
 end
@@ -89,8 +90,16 @@ function class:accrueBoredom (current_task, dt)
 
             next_location = task:getLocation(self.name)
 
+            -- can't do a thing at an occupied location
+            occupied = (next_location == nil)
+
+            -- can't work at a broken station
+            if task.name == "work" then
+                broken = game.ship.stations[next_location]:isDamaged()
+            end
+
             -- it is occupied so choose something else
-            if next_location ~= nil then
+            if not (occupied or broken) then
                 love.debug.printIf("crew_class", "  switched to", task.name)
                 next_task = task
                 switched = true
@@ -136,7 +145,17 @@ function class:update(dt)
                 -- pivot into the next direction
                 self:setDirection(subsequent.directions[self.destination].direction)
             else
+                -- arrived
                 -- facing is chosen by the station
+
+                -- damage snowman when arriving at porn station
+                if self.current_task.name == "porn" then
+                    game.ship.snowman:damage()
+                end
+
+                if self.current_task.name == "work" then
+                    game.map.layers[self.name .. '_on'].visible = true
+                end
             end
         end
     else
@@ -173,6 +192,9 @@ function class:update(dt)
             -- there is something more exciting to do
             self.current_task = next_task
 
+            if self.current_task.name ~= "work" then
+                game.map.layers[self.name .. '_on'].visible = false
+            end
             -- TODO this isn't deterministic, so we shouldn't be doing it twice
             -- probably we need to optimistically setDestination when we determine
             -- the natural next task above
