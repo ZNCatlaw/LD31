@@ -54,15 +54,15 @@ end
 function state:getMouseTile()
     local r_scale =  love.viewport.r_scale
     local mouseX, mouseY = love.mouse.getPosition()
-    mouseX = mouseX / r_scale
-    mouseY = mouseY / r_scale
+    mouseX = (mouseX - love.viewport.draw_ox) / r_scale
+    mouseY = (mouseY - love.viewport.draw_oy) / r_scale
 
     local mapWidth = game.map.width
     local mapHeight = game.map.height
 
     local mouseTileX, mouseTileY = game.map:convertScreenToTile(mouseX, mouseY)
-    mouseTileX = math.max(1, math.min(math.floor(mouseTileX), mapWidth))
-    mouseTileY = math.max(1, math.min(math.floor(mouseTileY), mapHeight))
+    mouseTileX = math.max(1, math.min(math.ceil(mouseTileX), mapWidth))
+    mouseTileY = math.max(1, math.min(math.ceil(mouseTileY), mapHeight))
 
     return mouseTileX, mouseTileY
 end
