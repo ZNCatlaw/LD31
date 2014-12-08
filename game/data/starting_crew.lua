@@ -6,33 +6,38 @@ local starting_crew = {
             Task.new('porn'),
             Task.new('wander'),
             Task.new('work')
-        }
+        },
+        walkspeed = 2,
     },
     cto = {
         tasks = {
             Task.new('porn'),
             Task.new('wander'),
             Task.new('work')
-        }
+        },
+        walkspeed = 1.5,
     },
     engineer = {
         tasks = {
             Task.new('porn'),
             Task.new('wander'),
             Task.new('work')
-        }
+        },
+        walkspeed = 1,
     },
     scientist = {
         tasks = {
             Task.new('porn'),
             Task.new('wander'),
             Task.new('work')
-        }
+        },
+        walkspeed = 3,
     },
     operator = {
         tasks = {
             Task.new('work')
-        }
+        },
+        walkspeed = 0.5,
     }
 }
 

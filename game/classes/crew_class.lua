@@ -9,6 +9,9 @@ function class:initialize(name, data)
         end
     end
 
+    self.anims = game.data.anims[name]
+    self.currentAnim = self.anims['walkdown']
+
     local vert = game.map.graph.verts[name]
 
     self.x = vert.x
@@ -16,25 +19,32 @@ function class:initialize(name, data)
     self.progress = 0
     self.location = name
     self.destination = name
-    self.direction = DIRECTIONS[0][1]
+
+    self:setDirection(DIRECTIONS[0][1])
 end
 
 function class:updateDestination (dt)
 end
 
---  Error: game/classes/crew_class.lua:44: attempt to index a nil value
---  stack traceback:
---      game/classes/crew_class.lua:44: in function 'update'
---      game/classes/ship_class.lua:25: in function 'update'
---      game/states/play_state.lua:59: in function 'update'
---      love/update.lua:7: in function 'update'
---      love/run.lua:47: in function <love/run.lua:1>
---      [C]: in function 'xpcall'
+function class:setDirection (direction)
+    if (direction.dx == 1) then
+        self.currentAnim = self.anims['walkright']
+    elseif (direction.dx == -1) then
+        self.currentAnim = self.anims['walkleft']
+    elseif (direction.dy == -1) then
+        self.currentAnim = self.anims['walkup']
+    elseif (direction.dy == 1) then
+        self.currentAnim = self.anims['walkdown']
+    else
+       self.currentAnim = self.anims['walkdown']
+    end
+    self.direction = direction
+end
 
 function class:update(dt)
     if self.destination ~= self.location then
         -- walk in the current direction
-        self.progress = self.progress + dt*10 -- TODO remove this 10
+        self.progress = self.progress + (dt * self.walkspeed)
 
         if self.progress > 1 then
             self.progress = 0
@@ -48,7 +58,7 @@ function class:update(dt)
 
             if self.location ~= self.destination then
                 -- pivot into the next direction
-                self.direction = subsequent.directions[self.destination].direction
+                self:setDirection(subsequent.directions[self.destination].direction)
             else
                 -- facing is chosen by the station
             end
@@ -56,12 +66,42 @@ function class:update(dt)
     else
         self.destination = "engineer"
         -- work, download porn, what-have you
-    end
+        if self.location ~= self.destination then
+            self.progress = 0
+            local current = game.map.graph.verts[self.location]
+            love.debug.print(self.name)
+            love.debug.print(self.destination)
+            love.debug.print(current.directions)
+            local direction = current.directions[self.destination].key
+            local subsequent = game.map.graph.verts[direction]
 
+            self.location = subsequent.name
+            self.x = subsequent.x
+            self.y = subsequent.y
+
+            if self.location ~= self.destination then
+                -- pivot into the next direction
+                self:setDirection(subsequent.directions[self.destination].direction)
+            else
+                -- facing is chosen by the station
+            end
+        end
+    end
+    self.currentAnim:update(dt)
 end
 
 function class:draw()
-    love.graphics.circle("fill", 32*self.x, 32*self.y, 10)
+    local tileWidth = game.map.tilewidth
+    local tileHeight = game.map.tileheight
+
+    local currentVert = game.map.graph.verts[self.location]
+
+    local thisX = self.x * tileWidth
+    local thisY = self.y * tileHeight
+    local offsetX = tileWidth * self.progress * self.direction.dx
+    local offsetY = tileHeight * self.progress * self.direction.dy
+
+    self.currentAnim:draw(self.anims.image, thisX + offsetX, thisY + offsetY, 0, 1, 1, 0, 8)
 end
 
 --

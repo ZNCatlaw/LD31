@@ -7,6 +7,7 @@ local anims = {}
 local walkspeed = 0.5
 
 anims['captain'] = {
+    image = spriteSheet,
     walkdown = anim8.newAnimation(g('7-9', 5), walkspeed),
     walkleft = anim8.newAnimation(g('7-9', 6), walkspeed),
     walkright = anim8.newAnimation(g('7-9', 7), walkspeed),
@@ -14,6 +15,7 @@ anims['captain'] = {
 }
 
 anims['cto'] = {
+    image = spriteSheet,
     walkdown = anim8.newAnimation(g('1-3', 5), walkspeed),
     walkleft = anim8.newAnimation(g('1-3', 6), walkspeed),
     walkright = anim8.newAnimation(g('1-3', 7), walkspeed),
@@ -21,6 +23,7 @@ anims['cto'] = {
 }
 
 anims['engineer'] = {
+    image = spriteSheet,
     walkdown = anim8.newAnimation(g('1-3', 1), walkspeed),
     walkleft = anim8.newAnimation(g('1-3', 2), walkspeed),
     walkright = anim8.newAnimation(g('1-3', 3), walkspeed),
@@ -28,6 +31,7 @@ anims['engineer'] = {
 }
 
 anims['scientist'] = {
+    image = spriteSheet,
     walkdown = anim8.newAnimation(g('7-9', 1), walkspeed),
     walkleft = anim8.newAnimation(g('7-9', 2), walkspeed),
     walkright = anim8.newAnimation(g('7-9', 3), walkspeed),
@@ -35,6 +39,7 @@ anims['scientist'] = {
 }
 
 anims['operator'] = {
+    image = spriteSheet,
     walkdown = anim8.newAnimation(g('10-12', 5), walkspeed),
     walkleft = anim8.newAnimation(g('10-12', 6), walkspeed),
     walkright = anim8.newAnimation(g('10-12', 7), walkspeed),
