@@ -84,6 +84,8 @@ function class:draw(x, y, w)
         offsetX = self.image:getWidth() + 2
     end
 
+    local r,g,b,a = love.graphics.getColor()
+    love.graphics.setColor(0,255,64,255)
     local font = love.graphics.getFont()
     if self.font then love.graphics.setFont(self.font) end
 
@@ -92,6 +94,7 @@ function class:draw(x, y, w)
     else
         love.graphics.print(msg, x + offsetX, y)
     end
+    love.graphics.setColor(r,g,b,a)
 
     love.graphics.setFont(font)
 end

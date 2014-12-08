@@ -79,12 +79,18 @@ function ui:draw()
     end
 
     local statusbox = self.statusbox
+    local r,g,b,a = love.graphics.getColor()
+    love.graphics.setColor(0,255,64,255)
     local font = love.graphics.getFont()
+
     love.graphics.setFont(statusbox.headerFont)
     love.graphics.printf(statusbox.header, statusbox.x, statusbox.y, statusbox.w)
+
     love.graphics.setFont(statusbox.messageFont)
     love.graphics.printf(statusbox.message, statusbox.x, statusbox.y + 18, statusbox.w)
+
     love.graphics.setFont(font)
+    love.graphics.setColor(r,g,b,a)
 end
 
 --
