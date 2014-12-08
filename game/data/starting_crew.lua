@@ -16,7 +16,7 @@ local starting_crew = {
             Task.new('work', 'cto'),
             Task.new('wander')
         },
-        walkspeed = 1.5,
+        walkspeed = 2,
         initial_task = 2
     },
     engineer = {
@@ -25,7 +25,7 @@ local starting_crew = {
             Task.new('work', 'engineer'),
             Task.new('wander')
         },
-        walkspeed = 1,
+        walkspeed = 2,
         initial_task = 2
     },
     scientist = {
@@ -34,7 +34,7 @@ local starting_crew = {
             Task.new('wander'),
             Task.new('work', 'scientist')
         },
-        walkspeed = 3,
+        walkspeed = 2,
         initial_task = 3
     },
     operator = {
@@ -43,7 +43,7 @@ local starting_crew = {
             Task.new('work', 'operator'),
             Task.new('wander')
         },
-        walkspeed = 0.5,
+        walkspeed = 2,
         initial_task = 1
     }
 }
