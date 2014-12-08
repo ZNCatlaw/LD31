@@ -95,7 +95,10 @@ end
 local performWander = function (self, crew)
     if crew.name == "cto" then
         -- debug the current location
-        game.ship.stations[crew.location]:debug()
+        zigspect(game.ship.stations)
+        if game.ship.stations[crew.location] then
+            game.ship.stations[crew.location]:debug()
+        end
 
     elseif crew.name == "engineer" then
         -- repair the current location

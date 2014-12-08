@@ -70,6 +70,12 @@ function ui:update(dt)
     end
 end
 
+function ui:addEventDialogue (message, name)
+end
+
+function ui:addEventStatus (message, posture)
+end
+
 function ui:draw()
     if self.highlightLayer then
         love.mouse.setCursor(game.images.cursors.red)
