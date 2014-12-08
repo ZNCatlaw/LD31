@@ -51,10 +51,24 @@ end
 function state:resume()
 end
 
+function state:getMouseTile()
+    local r_scale =  love.viewport.r_scale
+    local mouseX, mouseY = love.mouse.getPosition()
+    mouseX = (mouseX - love.viewport.draw_ox) / r_scale
+    mouseY = (mouseY - love.viewport.draw_oy) / r_scale
+
+    local mapWidth = game.map.width
+    local mapHeight = game.map.height
+
+    local mouseTileX, mouseTileY = game.map:convertScreenToTile(mouseX, mouseY)
+    mouseTileX = math.max(1, math.min(math.ceil(mouseTileX), mapWidth))
+    mouseTileY = math.max(1, math.min(math.ceil(mouseTileY), mapHeight))
+
+    return mouseTileX, mouseTileY
+end
+
 function state:getHighlightLayer()
-    local mouseTileX, mouseTileY = game.map:convertScreenToTile(love.mouse.getPosition())
-    mouseTileX = math.floor(mouseTileX) + 1
-    mouseTileY = math.floor(mouseTileY) + 1
+    local mouseTileX, mouseTileY = self:getMouseTile()
     for k,v in pairs(game.map.layers) do
         local name = v.name
         if (name:find('_highlight') and v['data'][mouseTileY][mouseTileX]) then
