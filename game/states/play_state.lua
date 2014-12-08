@@ -39,11 +39,24 @@ function state:init()
 end
 
 function state:enter()
+    game.ui = game.classes.UI.new()
     game.ship = game.classes.Ship.new({
         stations = game.data.stations,
         crew = game.data.starting_crew
     })
 
+    game.dialog = game.classes.DialogQueue.new({
+        game.classes.Dialog.new({message = 'CAPTAIN: Lomo skateboard leggings, twee American Apparel tofu butcher cronut organic. Mlkshk disrupt flannel, mustache tote bag twee cray.',
+            persist = true,
+            anim = game.data.anims.captain.walkdown:clone(),
+            image = game.images.peoplesprites,
+            font = game.images.fonts.dialog}),
+        game.classes.Dialog.new({message = 'ENGINEER: Craft beer synth disrupt mustache lumbersexual. Brooklyn Intelligentsia XOXO health goth, retro.',
+            persist = true,
+            anim = game.data.anims.engineer.walkdown:clone(),
+            image = game.images.peoplesprites,
+            font = game.images.fonts.dialog})
+    })
 end
 
 function state:leave()
@@ -52,38 +65,12 @@ end
 function state:resume()
 end
 
-function state:getMouseTile(x,y)
-    local r_scale =  love.viewport.r_scale
-    local mouseX, mouseY = love.mouse.getPosition()
-    mouseX = (mouseX - love.viewport.draw_ox) / r_scale
-    mouseY = (mouseY - love.viewport.draw_oy) / r_scale
-
-    local mapWidth = game.map.width
-    local mapHeight = game.map.height
-
-    local mouseTileX, mouseTileY = game.map:convertScreenToTile(mouseX, mouseY)
-    mouseTileX = math.max(1, math.min(math.ceil(mouseTileX), mapWidth))
-    mouseTileY = math.max(1, math.min(math.ceil(mouseTileY), mapHeight))
-
-    return mouseTileX, mouseTileY
-end
-
-function state:getHighlightLayer(x, y)
-    local mouseTileX, mouseTileY = self:getMouseTile(x, y)
-    for k,v in pairs(game.map.layers) do
-        local name = v.name
-        if (name:find('_highlight') and v['data'][mouseTileY][mouseTileX]) then
-            return name
-        end
-    end
+function state:keypressed(key)
+    if key == 'x' then game.dialog:skipCurrent() end
 end
 
 function state:mousepressed(x, y, button)
-    local room = self:getHighlightLayer(x, y)
-    if room then
-        room = room:gsub('_highlight','')
-        timspect('CLICKED!', room, button)
-    end
+    game.ui:mousepressed(x, y, button)
 end
 
 function state:update(dt)
@@ -94,8 +81,9 @@ function state:update(dt)
     self.highlightLayer = self:getHighlightLayer(love.mouse.getPosition())
 
     game.events:update(dt)
-
     game.ship:update(dt)
+    game.ui:update(dt)
+    game.dialog:update(dt)
 
     if game.ship:shouldAsplode() then
         error("YOUR SHIP ASPLODE")
@@ -116,15 +104,9 @@ function state:draw()
 
     game.ship:draw()
 
-    if self.highlightLayer then
-        love.mouse.setCursor(game.images.cursors.red)
-        local r,g,b,a = love.graphics.getColor()
-        love.graphics.setColor(251,79,20,32)
-        game.map:drawTileLayer(self.highlightLayer)
-        love.graphics.setColor(r,g,b,a)
-    else
-        love.mouse.setCursor(game.images.cursors.default)
-    end
+    game.ui:draw()
+
+    game.dialog:draw(32, 96, 384)
 end
 
 return state

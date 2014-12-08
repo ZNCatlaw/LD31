@@ -10,6 +10,13 @@ images['clicktostart'] = love.graphics.newImage('assets/images/title-clicktostar
 -- Spritesheets
 images['peoplesprites'] = love.graphics.newImage('assets/maps/tilesets/peoplesprites.png')
 
+-- Fonts
+images.fonts = {}
+
+images.fonts['dialog'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 18)
+images.fonts['statusHeader'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 15)
+images.fonts['statusMessage'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 12)
+
 -- Cursors
 images.cursors = {}
 
