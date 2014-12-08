@@ -45,6 +45,9 @@ function state:enter()
         crew = game.data.starting_crew
     })
 
+    TEsound.stop('music')
+    TEsound.playLooping('assets/music/pulselooper-kalterkrieg.mp3', 'music', 0.75)
+
     game.dialog = game.classes.DialogQueue.new({
         game.classes.Dialog.new({message = 'CAPTAIN: Lomo skateboard leggings, twee American Apparel tofu butcher cronut organic. Mlkshk disrupt flannel, mustache tote bag twee cray.',
             persist = true,
