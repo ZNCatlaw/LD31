@@ -1,6 +1,9 @@
 local class = Class.new('Crew')
 
+class.names = Set.new()
+
 function class:initialize(name, data)
+    class.names:add(name)
 
     self.name = name
     if(type(data) == 'table') then
@@ -17,13 +20,21 @@ function class:initialize(name, data)
     self.x = vert.x
     self.y = vert.y
     self.progress = 0
-    self.location = name
     self.destination = name
+    self.location = name
+
+    self.current_task = self.tasks[self.initial_task]
 
     self:setDirection(DIRECTIONS[0][1])
 end
 
-function class:updateDestination (dt)
+function class.randomName ()
+    local size = class.names:size()
+    local names = class.names:items()
+
+    local index = love.math.random(1, size)
+
+    return names[index]
 end
 
 function class:setDirection (direction)

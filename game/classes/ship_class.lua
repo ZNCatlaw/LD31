@@ -12,6 +12,7 @@ function class:initialize(opts)
     if(type(opts.crew) == 'table') then
         for k,v in pairs(opts.crew) do
             self.crew[k] = game.classes.Crew.new(k, v)
+            self.stations[k].occupancy[k] = true
         end
     end
 end
