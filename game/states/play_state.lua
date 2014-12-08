@@ -45,14 +45,17 @@ function state:enter()
         crew = game.data.starting_crew
     })
 
+    TEsound.stop('music')
+    TEsound.playLooping('assets/music/pulselooper-kalterkrieg.mp3', 'music', 0.75)
+
     game.dialog = game.classes.DialogQueue.new({
         game.classes.Dialog.new({message = 'CAPTAIN: Lomo skateboard leggings, twee American Apparel tofu butcher cronut organic. Mlkshk disrupt flannel, mustache tote bag twee cray.',
-            persist = true,
+            --persist = true,
             anim = game.data.anims.captain.walkdown:clone(),
             image = game.images.peoplesprites,
             font = game.images.fonts.dialog}),
         game.classes.Dialog.new({message = 'ENGINEER: Craft beer synth disrupt mustache lumbersexual. Brooklyn Intelligentsia XOXO health goth, retro.',
-            persist = true,
+            --persist = true,
             anim = game.data.anims.engineer.walkdown:clone(),
             image = game.images.peoplesprites,
             font = game.images.fonts.dialog})
@@ -66,11 +69,19 @@ function state:resume()
 end
 
 function state:keypressed(key)
-    if key == 'x' then game.dialog:skipCurrent() end
+    if (key == 'p' or key == 'q' or key == 'escape') then
+        Gamestate.push(game.states.pause)
+    elseif (key == ' ' or key == 'return') then
+        game.dialog:skipCurrent()
+    end
 end
 
 function state:mousepressed(x, y, button)
     game.ui:mousepressed(x, y, button)
+end
+
+function state:focus(f)
+    if not f then Gamestate.push(game.states.pause) end
 end
 
 function state:update(dt)
@@ -84,7 +95,7 @@ function state:update(dt)
     game.dialog:update(dt)
 
     if game.ship:shouldAsplode() then
-        error("YOUR SHIP ASPLODE")
+        Gamestate.push(game.states.lose)
     end
 end
 

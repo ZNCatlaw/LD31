@@ -1,9 +1,5 @@
 local state = {}
 
-local function playTitleMusic()
-  TEsound.playLooping("assets/sounds/music-roygbiv.mp3", "music")
-end
-
 function state:init()
 end
 
@@ -13,7 +9,7 @@ function state:enter()
     self.interactive =  false
     self.flash = false
 
-    self.timer.add(1, playTitleMusic)
+    self.timer.add(1, function() TEsound.playLooping('assets/music/2bithank-roygbiv.mp3', 'music') end)
     self.timer.add(2, function() table.insert(self.drawImages, game.images.znc) end)
     self.timer.add(3, function() table.insert(self.drawImages, game.images.titletext) end)
     self.timer.add(4, function()
