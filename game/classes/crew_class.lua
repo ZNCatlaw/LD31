@@ -21,6 +21,8 @@ function class:initialize(name, data)
     self.destination = name
 
     self:setDirection(DIRECTIONS[0][1])
+
+    love.debug.print(self.name, self.x, self.y)
 end
 
 function class:updateDestination (dt)
@@ -74,10 +76,6 @@ function class:update(dt)
             love.debug.print(current.directions)
             local direction = current.directions[self.destination].key
             local subsequent = game.map.graph.verts[direction]
-
-            self.location = subsequent.name
-            self.x = subsequent.x
-            self.y = subsequent.y
 
             if self.location ~= self.destination then
                 -- pivot into the next direction
