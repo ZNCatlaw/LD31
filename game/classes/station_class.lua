@@ -31,6 +31,10 @@ function class:isDamaged()
     return self._damage
 end
 
+function class:isDamagedOrBuggy()
+    return self._damage or self.corrupt
+end
+
 function class:damage()
 
     if self._damage == false then

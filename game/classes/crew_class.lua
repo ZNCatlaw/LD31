@@ -74,7 +74,7 @@ function class:accrueBoredom (current_task, dt)
     local may_switch = rnd < current_task.boredom*(dt*check_frequency)
     local switched = false
 
-    love.debug.printIf("crew_class", rnd, current_task.boredom)
+    --love.debug.printIf("crew_class", rnd, current_task.boredom)
 
     for i, task in ipairs(self.tasks) do
         local sign = (task.name == current_task.name) and rate.increase or -rate.decrease
@@ -83,7 +83,7 @@ function class:accrueBoredom (current_task, dt)
         task.boredom = task.boredom + sign*(dt/time_dilation)
         task.boredom = math.min(math.max(task.boredom, 0), 1)
 
-        love.debug.printIf("crew_class", "  ", task.name, task.boredom, current_task.boredom)
+        --love.debug.printIf("crew_class", "  ", task.name, task.boredom, current_task.boredom)
         -- is may switch and has not switched and task being considered is less boring
         if not switched and may_switch and next_task == current_task and task.boredom < current_task.boredom then
             love.debug.printIf("crew_class", "  attempt switch to", task.name)
@@ -95,7 +95,11 @@ function class:accrueBoredom (current_task, dt)
 
             -- can't work at a broken station
             if task.name == "work" then
-                broken = game.ship.stations[next_location]:isDamaged()
+                love.debug.printIf("crew_class", "couldn't work because broken")
+                broken = game.ship.stations[next_location]:isDamagedOrBuggy()
+            elseif task.name == "porn" then
+                love.debug.printIf("crew_class", "couldn't porn because broken")
+                broken = game.ship.stations["quarters"]:isDamagedOrBuggy()
             end
 
             -- it is occupied so choose something else
@@ -130,6 +134,7 @@ function class:update(dt)
         -- walk in the current direction
         self.progress = self.progress + (dt * self.walkspeed)
 
+        local next_task = self:accrueBoredom(self.current_task, dt)
         if self.progress > 1 then
             self.progress = 0
             local current = game.map.graph.verts[self.location]

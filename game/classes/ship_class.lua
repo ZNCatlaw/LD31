@@ -23,7 +23,6 @@ function class:initialize(opts)
 end
 
 function class:shouldAsplode()
-    zigspect(self.snowman:getDamage(), self.damage, self.corruption)
     return self.snowman:getDamage() == 7 or self.corruption == 7 or self.damage == 7
 end
 
