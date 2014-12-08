@@ -86,27 +86,54 @@ function class:accrueBoredom (current_task, dt)
         --love.debug.printIf("crew_class", "  ", task.name, task.boredom, current_task.boredom)
         -- is may switch and has not switched and task being considered is less boring
         if not switched and may_switch and next_task == current_task and task.boredom < current_task.boredom then
-            love.debug.printIf("crew_class", "  attempt switch to", task.name)
+            local damaged, malfunction, occupied = false, false, false
+
+            love.debug.printIf("boredom", "-------------------------")
+            love.debug.printIf("boredom", self.name, "attempt switch to", task.name)
 
             next_location = task:getLocation(self.name)
 
             -- can't do a thing at an occupied location
             occupied = (next_location == nil)
 
-            -- can't work at a broken station
-            if task.name == "work" then
-                love.debug.printIf("crew_class", "couldn't work because broken")
-                broken = game.ship.stations[next_location]:isDamagedOrBuggy()
-            elseif task.name == "porn" then
-                love.debug.printIf("crew_class", "couldn't porn because broken")
-                broken = game.ship.stations["quarters"]:isDamagedOrBuggy()
+            -- can't work at a damaged station
+            if task.name == "work" and self.name ~= "engineer" then
+                damaged = game.ship.stations[next_location]:isDamaged()
+
+                if damaged then
+                    love.debug.printIf("boredom", "couldn't work because damaged")
+                end
+            elseif task.name == "porn" and self.name ~= "engineer" then
+                damaged = game.ship.stations["quarters"]:isDamaged()
+
+                if damaged then
+                    love.debug.printIf("boredom", "couldn't porn because damaged")
+                end
+            end
+
+            -- can't work at a buggy station
+            if task.name == "work" and self.name ~= "cto" then
+                malfunction = game.ship.stations[next_location]:isMalfunction()
+
+                if damaged then
+                    love.debug.printIf("boredom", "couldn't work because malfunction")
+                end
+            elseif task.name == "porn" and self.name ~= "cto" then
+                malfunction = game.ship.stations["quarters"]:isMalfunction()
+
+                if damaged then
+                    love.debug.printIf("boredom", "couldn't porn because malfunction")
+                end
             end
 
             -- it is occupied so choose something else
-            if not (occupied or broken) then
-                love.debug.printIf("crew_class", "  switched to", task.name)
+            love.debug.printIf("boredom", tostring(occupied), tostring(damaged), tostring(malfunction))
+            if not (occupied or damaged or malfunction) then
+                love.debug.printIf("boredom", "  switched to", task.name)
                 next_task = task
                 switched = true
+            else
+                love.debug.printIf("boredom", "  could not switch to", task.name)
             end
         end
     end
@@ -128,13 +155,16 @@ end
 
 function class:update(dt)
 
-    love.debug.printIf("crew_class", self.name, self.destination, self.location, self.current_task.name)
+    --love.debug.printIf("crew_class", self.name, self.destination, self.location, self.current_task.name)
 
     if self.destination ~= self.location then
         -- walk in the current direction
         self.progress = self.progress + (dt * self.walkspeed)
 
-        local next_task = self:accrueBoredom(self.current_task, dt)
+        love.debug.unsetFlag("boredom")
+        self:accrueBoredom(self.current_task, dt)
+        love.debug.setFlag("boredom")
+
         if self.progress > 1 then
             self.progress = 0
             local current = game.map.graph.verts[self.location]
@@ -146,7 +176,7 @@ function class:update(dt)
             self.y = subsequent.y
 
             if self.location ~= self.destination then
-                love.debug.printIf("crew_class", self.location, self.destination, subsequent.name)
+                --love.debug.printIf("crew_class", self.location, self.destination, subsequent.name)
                 -- pivot into the next direction
                 self:setDirection(subsequent.directions[self.destination].direction)
             else
@@ -155,16 +185,19 @@ function class:update(dt)
 
                 -- damage snowman when arriving at porn station
                 if self.current_task.name == "porn" then
-                    if not game.ship.stations["quarters"]:isDamagedOrBuggy() then
-                        game.ship.snowman:damage()
-                    end
+                    self.current_task:perform(self)
                 end
 
                 -- turn on monitors when arriving at functional stations
                 if self.current_task.name == "work" then
-                    if not game.ship.stations[self.name]:isDamagedOrBuggy() then
+                    if not game.ship.stations[self.name]:isDamagedOrMalfunction() then
                         game.map.layers[self.name .. '_on'].visible = true
                     end
+                end
+
+                -- having arrived, maybe fix it?
+                if self.current_task.name == "wander" then
+                    self.current_task:perform(self)
                 end
             end
         end
@@ -173,7 +206,9 @@ function class:update(dt)
         local next_task = self:accrueBoredom(self.current_task, dt)
 
         -- work, download porn, what-have you
-        self.current_task:perform(self)
+        if self.current_task.name == "work" then
+            self.current_task:perform(self)
+        end
 
         if self:isWaiting() then return end
 
@@ -199,6 +234,7 @@ function class:update(dt)
 --      end
 
         if self.current_task ~= next_task then
+            love.debug.printIf("crew_class", self.name, "switching to", next_task.name)
             -- there is something more exciting to do
             self.current_task = next_task
 
@@ -210,7 +246,7 @@ function class:update(dt)
             -- the natural next task above
             self:setDestination(self.current_task:getLocation(self.name))
 
-            love.debug.printIf("crew_class", "from", self.location, "towards", self.destination)
+            -- love.debug.printIf("crew_class", "from", self.location, "towards", self.destination)
             if self.location ~= self.destination then
                 self.progress = 0
                 local current = game.map.graph.verts[self.location]

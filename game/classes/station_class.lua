@@ -24,19 +24,19 @@ function class:initialize(name, data)
 
     self.occupancy = {}
     self._damage = false
-    self.corrupt = false
+    self._malfunction = false
 end
 
 function class:isDamaged()
     return self._damage
 end
 
-function class:isDamagedOrBuggy()
-    return self._damage or self.corrupt
+function class:isDamagedOrMalfunction()
+    return self._damage or self._malfunction
 end
 
 function class:isMalfunction()
-    return self.corrupt
+    return self._malfunction
 end
 
 function class:damage()
@@ -61,23 +61,23 @@ function class:repair()
 end
 
 function class:malfunction()
-    if self.corrupt == false then
-        if game.ship.corruption < 7 then
-            game.ship.corruption = game.ship.corruption + 1
+    if self._malfunction == false then
+        if game.ship.malfunction < 7 then
+            game.ship.malfunction = game.ship.malfunction + 1
         end
     end
 
-    self.corrupt = true
+    self._malfunction = true
 end
 
-function class:repair()
-    if self.corrupt == true then
-        if game.ship.corruption > 0 then
-            game.ship.corruption = game.ship.corruption - 1
+function class:debug()
+    if self._malfunction == true then
+        if game.ship.malfunction > 0 then
+            game.ship.malfunction = game.ship.malfunction - 1
         end
     end
 
-    self.corrupt = false
+    self._malfunction = false
 end
 
 function class:update(dt)

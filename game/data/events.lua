@@ -27,8 +27,8 @@ local function damageShip (station)
     return "DAMAGE TO " .. station
 end
 
-local function corruptShip (station)
-    zigspect("event#corruptShip", station)
+local function malfunctionShip (station)
+    zigspect("event#malfunctionShip", station)
 
     game.ship.stations[station]:malfunction()
     zigspect(game.ship.damage, game.ship.corruption)
@@ -63,7 +63,7 @@ local events = {
     },
     cto = {
         success = function () return "technology, yay!" end,
-        fail = corruptShip
+        fail = malfunctionShip
 
     },
     operator = {
@@ -82,7 +82,7 @@ function events:scheduleEvent (crew)
     self.current = crew
     self.message = event_messages[self.current]
 
-    self.timer.add(5, function ()
+    self.timer.add(3, function ()
         game.events:setWillResolve(true)
     end)
 end

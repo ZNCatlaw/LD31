@@ -45,11 +45,38 @@ local getWanderLocation = function (self, crew_name)
 end
 
 local performPorn = function (self, crew)
+    -- engineer/cto fix porn
+    if crew.name == "engineer" then
+        game.ship.stations["quarters"]:repair()
+    elseif crew.name == "cto" then
+        game.ship.stations["quarters"]:debug()
+    end
+
+    if not game.ship.stations["quarters"]:isDamagedOrMalfunction() then
+        game.ship.snowman:damage()
+    end
 end
 
 local performWork = function (self, crew)
-    -- repair the room
+    -- engineer repairs damage to his station
+    if crew.name == "engineer" then
+        local engineering = game.ship.stations[crew.name]
 
+        if not engineering:isMalfunction() then
+            engineering:repair()
+        end
+    end
+
+    -- engineer repairs damage to his station
+    if crew.name == "cto" then
+        local super_computer = game.ship.stations[crew.name]
+
+        if not super_computer:isDamaged() then
+            super_computer:debug()
+        end
+    end
+
+    -- avert problems
     if game.events:hasEvent() then
         local event = game.events:getEvent()
 
@@ -68,10 +95,11 @@ end
 local performWander = function (self, crew)
     if crew.name == "cto" then
         -- debug the current location
+        game.ship.stations[crew.name]:debug()
 
     elseif crew.name == "engineer" then
         -- repair the current location
-
+        game.ship.stations[crew.name]:repair()
     end
 end
 

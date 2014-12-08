@@ -19,11 +19,11 @@ function class:initialize(opts)
     self.snowman = game.classes.Snowman.new()
 
     self.damage = 0
-    self.corruption = 0
+    self.malfunction = 0
 end
 
 function class:shouldAsplode()
-    return self.snowman:getDamage() == 7 or self.corruption == 7 or self.damage == 7
+    return self.snowman:getDamage() == 7 or self.malfunction == 7 or self.damage == 7
 end
 
 function class:update(dt)

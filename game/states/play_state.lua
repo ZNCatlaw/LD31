@@ -78,8 +78,6 @@ function state:update(dt)
         star.offset = star.offset + dt^star.velocity
     end
 
-    self.highlightLayer = self:getHighlightLayer(love.mouse.getPosition())
-
     game.events:update(dt)
     game.ship:update(dt)
     game.ui:update(dt)
