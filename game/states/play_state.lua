@@ -43,7 +43,7 @@ function state:enter()
         stations = game.data.stations,
         crew = game.data.starting_crew
     })
-    love.debug.print()
+
     game.dialog = game.classes.DialogQueue.new({
         game.classes.Dialog.new({message = 'CAPTAIN: Lomo skateboard leggings, twee American Apparel tofu butcher cronut organic. Mlkshk disrupt flannel, mustache tote bag twee cray.',
             persist = true,
@@ -113,11 +113,11 @@ function state:update(dt)
 
     game.dialog:update(dt)
 
---  if game.events:hasEvents() and game.events:willResolve() --[[ this is a countdown ]] then
---      game.events:resolve() -- this behaviour is set in crew update, either relief or damage
---  else
---      game.events:checkForEvents()
---  end
+    game.events:update(dt)
+
+    if game.ship:shouldAsplode() then
+        error("YOUR SHIP ASPLODE")
+    end
 end
 
 function state:draw()

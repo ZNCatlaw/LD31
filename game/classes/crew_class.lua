@@ -24,6 +24,7 @@ function class:initialize(name, data)
     self.location = name
 
     self.current_task = self.tasks[self.initial_task]
+    game.map.layers[self.name .. '_on'].visible = true
 
     self:setDirection(DIRECTIONS[0][1])
 end
@@ -52,9 +53,16 @@ function class:setDirection (direction)
     self.direction = direction
 end
 
+function class:setWaiting (waiting)
+    self.waiting = waiting
+end
+
+function class:isWaiting ()
+    return self.is_waiting
+end
+
 function class:accrueBoredom (current_task, dt)
     -- TODO check for conditions that cause boredom to accrue faster, like scientist in a crowded room
-    
     local rate = game.data.tasks.config.rate
     local time_dilation = game.data.tasks.config.time_dilation
     local check_frequency = game.data.tasks.config.check_frequency
@@ -66,7 +74,7 @@ function class:accrueBoredom (current_task, dt)
     local may_switch = rnd < current_task.boredom*(dt*check_frequency)
     local switched = false
 
-    zigspect(rnd, current_task.boredom)
+    love.debug.printIf("crew_class", rnd, current_task.boredom)
 
     for i, task in ipairs(self.tasks) do
         local sign = (task.name == current_task.name) and rate.increase or -rate.decrease
@@ -75,16 +83,24 @@ function class:accrueBoredom (current_task, dt)
         task.boredom = task.boredom + sign*(dt/time_dilation)
         task.boredom = math.min(math.max(task.boredom, 0), 1)
 
-        zigspect("  ", task.name, task.boredom, current_task.boredom)
+        love.debug.printIf("crew_class", "  ", task.name, task.boredom, current_task.boredom)
         -- is may switch and has not switched and task being considered is less boring
         if not switched and may_switch and next_task == current_task and task.boredom < current_task.boredom then
-            zigspect("  attempt switch to", task.name)
+            love.debug.printIf("crew_class", "  attempt switch to", task.name)
 
             next_location = task:getLocation(self.name)
 
+            -- can't do a thing at an occupied location
+            occupied = (next_location == nil)
+
+            -- can't work at a broken station
+            if task.name == "work" then
+                broken = game.ship.stations[next_location]:isDamaged()
+            end
+
             -- it is occupied so choose something else
-            if next_location ~= nil then
-                zigspect("  switched to", task.name)
+            if not (occupied or broken) then
+                love.debug.printIf("crew_class", "  switched to", task.name)
                 next_task = task
                 switched = true
             end
@@ -98,7 +114,7 @@ function class:setDestination(destination)
     local location = string.gsub(self.location, '_.', '')
     local station = string.gsub(destination, '_.', '')
 
-    print("setDestination", location, station)
+    love.debug.printIf("crew_class", "setDestination", location, station)
 
     game.ship.stations[location].occupancy[self.location] = false
     game.ship.stations[station].occupancy[destination] = true
@@ -107,7 +123,8 @@ function class:setDestination(destination)
 end
 
 function class:update(dt)
-    zigspect(self.name, self.destination, self.location, self.current_task.name)
+
+    love.debug.printIf("crew_class", self.name, self.destination, self.location, self.current_task.name)
 
     if self.destination ~= self.location then
         -- walk in the current direction
@@ -124,42 +141,38 @@ function class:update(dt)
             self.y = subsequent.y
 
             if self.location ~= self.destination then
-                zigspect(self.location, self.destination, subsequent.name)
+                love.debug.printIf("crew_class", self.location, self.destination, subsequent.name)
                 -- pivot into the next direction
                 self:setDirection(subsequent.directions[self.destination].direction)
             else
+                -- arrived
                 -- facing is chosen by the station
+
+                -- damage snowman when arriving at porn station
+                if self.current_task.name == "porn" then
+                    game.ship.snowman:damage()
+                end
+
+                if self.current_task.name == "work" then
+                    game.map.layers[self.name .. '_on'].visible = true
+                end
             end
         end
     else
         -- accrueboredom and determine possible next task
         local next_task = self:accrueBoredom(self.current_task, dt)
 
---      -- work, download porn, what-have you
---      self.current_task:perform(function ()
---          -- TODO move this code to the perform method
---          -- if current_task is work
---          if self.current_task == "work" and game.events:hasEvents() then
---              local event = game.events:getEvent()
+        -- work, download porn, what-have you
+        self.current_task:perform(self)
 
---              -- TODO shouldn't work if you aren't in the right location
-
---              if event.station == self.name then
---                  game.event:setAverted(true) -- prevent the event
---                  -- TODO this should cause a flag to get set in the crew, so that they
---                  -- remain at the event location for a few ticks before ever checking
---                  -- for boredom again: this is so that they won't just bullet bounce
---                  -- off the event room like PING
---              end
---          end
---      end)
+        if self:isWaiting() then return end
 
 --      -- snowman's alerts can override natural switching of tasks
 --      -- if the work task is less boring than the current task
 --      -- TODO actually split the bugs and warnings into two almost identical blocks
---      if game.snowman:hasAlert() then
+--      if game.ship.snowman:hasAlert() then
 --          if self.name == "cto" or self.name == "engineer" then
---              local alert = game.snowman:getAlert()
+--              local alert = game.ship.snowman:getAlert()
 
 --              self:reactTo(alert)
 
@@ -179,12 +192,15 @@ function class:update(dt)
             -- there is something more exciting to do
             self.current_task = next_task
 
+            if self.current_task.name ~= "work" then
+                game.map.layers[self.name .. '_on'].visible = false
+            end
             -- TODO this isn't deterministic, so we shouldn't be doing it twice
             -- probably we need to optimistically setDestination when we determine
             -- the natural next task above
             self:setDestination(self.current_task:getLocation(self.name))
 
-            zigspect("from", self.location, "towards", self.destination)
+            love.debug.printIf("crew_class", "from", self.location, "towards", self.destination)
             if self.location ~= self.destination then
                 self.progress = 0
                 local current = game.map.graph.verts[self.location]
