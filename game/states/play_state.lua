@@ -102,10 +102,13 @@ function state:draw()
     game.ship:draw()
 
     if self.highlightLayer then
+        love.mouse.setCursor(game.images.cursors.red)
         local r,g,b,a = love.graphics.getColor()
         love.graphics.setColor(251,79,20,32)
         game.map:drawTileLayer(self.highlightLayer)
         love.graphics.setColor(r,g,b,a)
+    else
+        love.mouse.setCursor(game.images.cursors.default)
     end
 end
 

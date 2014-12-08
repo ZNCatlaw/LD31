@@ -94,6 +94,16 @@ function class:draw()
     local offsetX = tileWidth * self.progress * self.direction.dx
     local offsetY = tileHeight * self.progress * self.direction.dy
 
+    if self.location ~= self.destination then
+        local ghostTile = game.map.graph.verts[self.destination]
+        local ghostX = ghostTile.x * tileWidth
+        local ghostY = ghostTile.y * tileWidth
+        local r,g,b,a = love.graphics.getColor()
+        love.graphics.setColor(255,255,255,64)
+        self.anims['staticdown']:draw(self.anims.image, ghostX, ghostY, 0, 1, 1, 0, 8)
+        love.graphics.setColor(r,g,b,a)
+    end
+
     self.currentAnim:draw(self.anims.image, thisX + offsetX, thisY + offsetY, 0, 1, 1, 0, 8)
 end
 

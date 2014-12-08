@@ -10,4 +10,22 @@ images['clicktostart'] = love.graphics.newImage('assets/images/title-clicktostar
 -- Spritesheets
 images['peoplesprites'] = love.graphics.newImage('assets/maps/tilesets/peoplesprites.png')
 
+-- Cursors
+images.cursors = {}
+
+images.cursors['default'] = love.mouse.newCursor('assets/images/cursors/cursor0.png', 0, 0)
+images.cursors['default_2x'] = love.mouse.newCursor('assets/images/cursors/cursor0_2x.png', 0, 0)
+
+images.cursors['gold'] = love.mouse.newCursor('assets/images/cursors/cursor1.png', 0, 0)
+images.cursors['gold_2x'] = love.mouse.newCursor('assets/images/cursors/cursor1_2x.png', 0, 0)
+
+images.cursors['brown'] = love.mouse.newCursor('assets/images/cursors/cursor2.png', 0, 0)
+images.cursors['brown_2x'] = love.mouse.newCursor('assets/images/cursors/cursor2_2x.png', 0, 0)
+
+images.cursors['red'] = love.mouse.newCursor('assets/images/cursors/cursor3.png', 0, 0)
+images.cursors['red_2x'] = love.mouse.newCursor('assets/images/cursors/cursor3_2x.png', 0, 0)
+
+images.cursors['dark'] = love.mouse.newCursor('assets/images/cursors/cursor4.png', 0, 0)
+images.cursors['dark_2x'] = love.mouse.newCursor('assets/images/cursors/cursor4_2x.png', 0, 0)
+
 return images

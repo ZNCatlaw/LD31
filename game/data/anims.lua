@@ -12,6 +12,7 @@ anims['captain'] = {
     walkleft = anim8.newAnimation(g('7-9', 6), walkspeed),
     walkright = anim8.newAnimation(g('7-9', 7), walkspeed),
     walkup = anim8.newAnimation(g('7-9', 8), walkspeed),
+    staticdown = anim8.newAnimation(g(7, 5), 1),
 }
 
 anims['cto'] = {
@@ -20,6 +21,7 @@ anims['cto'] = {
     walkleft = anim8.newAnimation(g('1-3', 6), walkspeed),
     walkright = anim8.newAnimation(g('1-3', 7), walkspeed),
     walkup = anim8.newAnimation(g('1-3', 8), walkspeed),
+    staticdown = anim8.newAnimation(g(1, 5), 1),
 }
 
 anims['engineer'] = {
@@ -28,6 +30,7 @@ anims['engineer'] = {
     walkleft = anim8.newAnimation(g('4-6', 6), walkspeed),
     walkright = anim8.newAnimation(g('4-6', 7), walkspeed),
     walkup = anim8.newAnimation(g('4-6', 8), walkspeed),
+    staticdown = anim8.newAnimation(g(4, 5), 1),
 }
 
 anims['scientist'] = {
@@ -36,6 +39,7 @@ anims['scientist'] = {
     walkleft = anim8.newAnimation(g('7-9', 2), walkspeed),
     walkright = anim8.newAnimation(g('7-9', 3), walkspeed),
     walkup = anim8.newAnimation(g('7-9', 4), walkspeed),
+    staticdown = anim8.newAnimation(g(7, 1), 1),
 }
 
 anims['operator'] = {
@@ -44,6 +48,7 @@ anims['operator'] = {
     walkleft = anim8.newAnimation(g('10-12', 6), walkspeed),
     walkright = anim8.newAnimation(g('10-12', 7), walkspeed),
     walkup = anim8.newAnimation(g('10-12', 8), walkspeed),
+    staticdown = anim8.newAnimation(g(10, 5), 1),
 }
 
 return anims
