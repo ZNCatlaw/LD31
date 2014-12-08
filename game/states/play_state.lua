@@ -51,7 +51,7 @@ end
 function state:resume()
 end
 
-function state:getMouseTile()
+function state:getMouseTile(x,y)
     local r_scale =  love.viewport.r_scale
     local mouseX, mouseY = love.mouse.getPosition()
     mouseX = (mouseX - love.viewport.draw_ox) / r_scale
@@ -67,8 +67,8 @@ function state:getMouseTile()
     return mouseTileX, mouseTileY
 end
 
-function state:getHighlightLayer()
-    local mouseTileX, mouseTileY = self:getMouseTile()
+function state:getHighlightLayer(x, y)
+    local mouseTileX, mouseTileY = self:getMouseTile(x, y)
     for k,v in pairs(game.map.layers) do
         local name = v.name
         if (name:find('_highlight') and v['data'][mouseTileY][mouseTileX]) then
@@ -77,12 +77,20 @@ function state:getHighlightLayer()
     end
 end
 
+function state:mousepressed(x, y, button)
+    local room = self:getHighlightLayer(x, y)
+    if room then
+        room = room:gsub('_highlight','')
+        timspect('CLICKED!', room, button)
+    end
+end
+
 function state:update(dt)
     for _,star in ipairs(self.stars) do
         star.offset = star.offset + dt^star.velocity
     end
 
-    self.highlightLayer = self:getHighlightLayer()
+    self.highlightLayer = self:getHighlightLayer(love.mouse.getPosition())
 
     game.ship:update(dt)
 
