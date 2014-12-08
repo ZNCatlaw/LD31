@@ -30,6 +30,8 @@ function love.debug.print(...)
     local args = {...} or {}
     for k,v in pairs(args) do
         if(type(v) == 'table') then args[k] = inspect(v) end
+        if(type(v) == 'boolean') then args[k] = tostring(v) end
+        if(type(v) == 'nil') then args[k] = 'nil' end
     end
     return io.write(timestamp, table.concat(args, " "), "\n")
 end

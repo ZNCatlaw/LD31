@@ -51,10 +51,38 @@ end
 function state:resume()
 end
 
+function state:getMouseTile()
+    local r_scale =  love.viewport.r_scale
+    local mouseX, mouseY = love.mouse.getPosition()
+    mouseX = (mouseX - love.viewport.draw_ox) / r_scale
+    mouseY = (mouseY - love.viewport.draw_oy) / r_scale
+
+    local mapWidth = game.map.width
+    local mapHeight = game.map.height
+
+    local mouseTileX, mouseTileY = game.map:convertScreenToTile(mouseX, mouseY)
+    mouseTileX = math.max(1, math.min(math.ceil(mouseTileX), mapWidth))
+    mouseTileY = math.max(1, math.min(math.ceil(mouseTileY), mapHeight))
+
+    return mouseTileX, mouseTileY
+end
+
+function state:getHighlightLayer()
+    local mouseTileX, mouseTileY = self:getMouseTile()
+    for k,v in pairs(game.map.layers) do
+        local name = v.name
+        if (name:find('_highlight') and v['data'][mouseTileY][mouseTileX]) then
+            return name
+        end
+    end
+end
+
 function state:update(dt)
     for _,star in ipairs(self.stars) do
         star.offset = star.offset + dt^star.velocity
     end
+
+    self.highlightLayer = self:getHighlightLayer()
 
     game.ship:update(dt)
 
@@ -76,9 +104,15 @@ function state:draw()
     love.graphics.setColor(r,g,b,a)
 
     game.map:draw()
-    game.map.graph:draw()
 
     game.ship:draw()
+
+    if self.highlightLayer then
+        local r,g,b,a = love.graphics.getColor()
+        love.graphics.setColor(251,79,20,32)
+        game.map:drawTileLayer(self.highlightLayer)
+        love.graphics.setColor(r,g,b,a)
+    end
 end
 
 return state

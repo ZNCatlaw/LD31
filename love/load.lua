@@ -9,11 +9,10 @@ function love.load()
         fs = false,
         cb = function(params)
             local pScale = love.window.getPixelScale()
-            local map = Gamestate.current().map
-            if map then
-                map:resize(love.window.getWidth() * pScale,
-                           love.window.getHeight() * pScale)
-                map.canvas:setFilter(unpack(conf.defaultImageFilter))
+            if game.map then
+                game.map:resize(love.window.getWidth() * pScale,
+                                love.window.getHeight() * pScale)
+                game.map.canvas:setFilter(unpack(conf.defaultImageFilter))
             end
         end
     })
