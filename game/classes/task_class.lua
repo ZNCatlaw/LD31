@@ -5,15 +5,15 @@ local function findAvailableSpot(location)
     local stations = game.ship.stations[location]
     local occupancy = stations.occupancy
 
-    zigspect("findAvailableSpot", location)
-    zigspect(stations.occupancy)
+    love.debug.printIf("task_class", "findAvailableSpot", location)
+    love.debug.printIf("task_class", stations.occupancy)
 
     local spot = nil
 
     local count = 1
     for name, occupied in pairs(stations.occupancy) do
         count = count + 1
-        zigspect("  ", name, tostring(occupied))
+        love.debug.printIf("task_class", "  ", name, tostring(occupied))
         if spot == nil and not occupied and string.find(name, '_') then
             spot = name
         end
@@ -21,10 +21,10 @@ local function findAvailableSpot(location)
 
     if count < stations.length + 1 then
         spot = location .. '_' .. letters[count]
-        zigspect(count, spot)
+        love.debug.printIf("task_class", count, spot)
     end
 
-    zigspect("  returning", spot)
+    love.debug.printIf("task_class", "  returning", spot)
     return spot
 end
 

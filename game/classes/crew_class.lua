@@ -66,7 +66,7 @@ function class:accrueBoredom (current_task, dt)
     local may_switch = rnd < current_task.boredom*(dt*check_frequency)
     local switched = false
 
-    zigspect(rnd, current_task.boredom)
+    love.debug.printIf("crew_class", rnd, current_task.boredom)
 
     for i, task in ipairs(self.tasks) do
         local sign = (task.name == current_task.name) and rate.increase or -rate.decrease
@@ -75,16 +75,16 @@ function class:accrueBoredom (current_task, dt)
         task.boredom = task.boredom + sign*(dt/time_dilation)
         task.boredom = math.min(math.max(task.boredom, 0), 1)
 
-        zigspect("  ", task.name, task.boredom, current_task.boredom)
+        love.debug.printIf("crew_class", "  ", task.name, task.boredom, current_task.boredom)
         -- is may switch and has not switched and task being considered is less boring
         if not switched and may_switch and next_task == current_task and task.boredom < current_task.boredom then
-            zigspect("  attempt switch to", task.name)
+            love.debug.printIf("crew_class", "  attempt switch to", task.name)
 
             next_location = task:getLocation(self.name)
 
             -- it is occupied so choose something else
             if next_location ~= nil then
-                zigspect("  switched to", task.name)
+                love.debug.printIf("crew_class", "  switched to", task.name)
                 next_task = task
                 switched = true
             end
@@ -98,7 +98,7 @@ function class:setDestination(destination)
     local location = string.gsub(self.location, '_.', '')
     local station = string.gsub(destination, '_.', '')
 
-    print("setDestination", location, station)
+    love.debug.printIf("crew_class", "setDestination", location, station)
 
     game.ship.stations[location].occupancy[self.location] = false
     game.ship.stations[station].occupancy[destination] = true
@@ -107,7 +107,7 @@ function class:setDestination(destination)
 end
 
 function class:update(dt)
-    zigspect(self.name, self.destination, self.location, self.current_task.name)
+    love.debug.printIf("crew_class", self.name, self.destination, self.location, self.current_task.name)
 
     if self.destination ~= self.location then
         -- walk in the current direction
@@ -124,7 +124,7 @@ function class:update(dt)
             self.y = subsequent.y
 
             if self.location ~= self.destination then
-                zigspect(self.location, self.destination, subsequent.name)
+                love.debug.printIf("crew_class", self.location, self.destination, subsequent.name)
                 -- pivot into the next direction
                 self:setDirection(subsequent.directions[self.destination].direction)
             else
@@ -184,7 +184,7 @@ function class:update(dt)
             -- the natural next task above
             self:setDestination(self.current_task:getLocation(self.name))
 
-            zigspect("from", self.location, "towards", self.destination)
+            love.debug.printIf("crew_class", "from", self.location, "towards", self.destination)
             if self.location ~= self.destination then
                 self.progress = 0
                 local current = game.map.graph.verts[self.location]
