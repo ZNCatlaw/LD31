@@ -121,3 +121,8 @@ love.debug.setFlag('zigs')
 zigspect = function(...)
     love.debug.printIf('zigs', ...)
 end
+
+love.debug.setFlag('tim')
+timspect = function(...)
+    love.debug.printIf('tim', ...)
+end
