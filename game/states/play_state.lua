@@ -43,6 +43,7 @@ function state:enter()
         stations = game.data.stations,
         crew = game.data.starting_crew
     })
+
 end
 
 function state:leave()
@@ -95,6 +96,10 @@ function state:update(dt)
     game.ship:update(dt)
 
     game.events:update(dt)
+
+    if game.ship:shouldAsplode() then
+        error("YOUR SHIP ASPLODE")
+    end
 end
 
 function state:draw()

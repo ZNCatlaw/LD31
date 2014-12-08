@@ -17,32 +17,41 @@ local function operatorBark ()
     return operator_barks[love.math.random(1, #operator_barks)]
 end
 
-local function damageShip ()
+-- TODO station should be chosen randomly
+local function damageShip (station)
+    game.ship.stations[station]:damage()
+    zigspect(game.ship.damage, game.ship.corruption)
+
     return "DAMAGE TO SHIP"
 end
 
 local function damageSnowman ()
+    game.ship.snowman:damage()
+    zigspect(game.ship.snowman._damage)
+
     return "DAMAGE TO SNOWMAN"
 end
 
 local events = {
     scientist = {
-        success = "science, yay!",
+        success = function ()
+            return "science, yay!"
+        end,
         fail = damageShip
 
     },
     engineer = {
-        success = "engineering, yay!",
+        success = function () return "engineering, yay!" end,
         fail = damageShip
 
     },
     captain = {
-        success = "captaincy, yay!",
+        success = function () return "captaincy, yay!" end,
         fail = damageShip
 
     },
     cto = {
-        success = "technology, yay!",
+        success = function () return "technology, yay!" end,
         fail = damageSnowman
 
     },
@@ -62,7 +71,7 @@ function events:scheduleEvent (crew)
     self.current = crew
     self.message = event_messages[self.current]
 
-    self.timer.add(5, function ()
+    self.timer.add(1, function ()
         game.events:setWillResolve(true)
     end)
 end
@@ -134,7 +143,7 @@ function events:resolve ()
         self.agent:setWaiting(false)
     else
         if type(events[self.current].fail) == "function" then
-            result = events[self.current].fail()
+            result = events[self.current].fail(self.current)
         else
             result = events[self.current].fail
         end

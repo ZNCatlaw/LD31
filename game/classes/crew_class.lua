@@ -143,17 +143,17 @@ function class:update(dt)
         -- accrueboredom and determine possible next task
         local next_task = self:accrueBoredom(self.current_task, dt)
 
-        if self:isWaiting() then return end
-
         -- work, download porn, what-have you
         self.current_task:perform(self)
+
+        if self:isWaiting() then return end
 
 --      -- snowman's alerts can override natural switching of tasks
 --      -- if the work task is less boring than the current task
 --      -- TODO actually split the bugs and warnings into two almost identical blocks
---      if game.snowman:hasAlert() then
+--      if game.ship.snowman:hasAlert() then
 --          if self.name == "cto" or self.name == "engineer" then
---              local alert = game.snowman:getAlert()
+--              local alert = game.ship.snowman:getAlert()
 
 --              self:reactTo(alert)
 

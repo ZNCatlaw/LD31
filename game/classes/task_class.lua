@@ -45,7 +45,7 @@ local getWanderLocation = function (self, crew_name)
 end
 
 local performPorn = function (self, crew)
-    -- damage the snowman
+    game.ship.snowman:damage()
 end
 
 local performWork = function (self, crew)
