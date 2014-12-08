@@ -58,7 +58,7 @@ function class:accrueBoredom (current_task, dt)
     -- increment boredom for the current station
     -- decrement boredom for the other stations
     local next_task = current_task
-    local may_switch = love.math.random() < current_task.boredom 
+    local may_switch = love.math.random() < current_task.boredom
     for i, task in ipairs(self.tasks) do
         local sign = (task.name == current_task.name) and 1 or -1
 
@@ -202,7 +202,7 @@ function class:draw()
         local ghostX = ghostTile.x * tileWidth
         local ghostY = ghostTile.y * tileWidth
         local r,g,b,a = love.graphics.getColor()
-        love.graphics.setColor(255,255,255,64)
+        love.graphics.setColor(128,128,128,160)
         self.anims['staticdown']:draw(self.anims.image, ghostX, ghostY, 0, 1, 1, 0, 8)
         love.graphics.setColor(r,g,b,a)
     end
