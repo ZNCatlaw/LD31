@@ -53,14 +53,20 @@ function class:setDirection (direction)
 end
 
 function class:accrueBoredom (current_task, dt)
+    dt = dt/10
     -- TODO check for conditions that cause boredom to accrue faster, like scientist in a crowded room
 
     -- increment boredom for the current station
     -- decrement boredom for the other stations
     local next_task = current_task
-    local may_switch = love.math.random() < current_task.boredom 
+    local rnd = love.math.random()
+    local may_switch = rnd < current_task.boredom*dt
+    local switched = false
+
+    zigspect(rnd, current_task.boredom)
+
     for i, task in ipairs(self.tasks) do
-        local sign = (task.name == current_task.name) and 1 or -1
+        local sign = (task.name == current_task.name) and 1 or -2
 
         -- TODO boredom should decrease more slowly than it increases
         task.boredom = task.boredom + sign*dt
@@ -68,7 +74,7 @@ function class:accrueBoredom (current_task, dt)
 
         zigspect("  ", task.name, task.boredom, current_task.boredom)
         -- is may switch and has not switched and task being considered is less boring
-        if may_switch and next_task == current_task and task.boredom < current_task.boredom then
+        if not switched and may_switch and next_task == current_task and task.boredom < current_task.boredom then
             zigspect("  attempt switch to", task.name)
 
             next_location = task:getLocation(self.name)
@@ -77,6 +83,7 @@ function class:accrueBoredom (current_task, dt)
             if next_location ~= nil then
                 zigspect("  switched to", task.name)
                 next_task = task
+                switched = true
             end
         end
     end
@@ -169,16 +176,19 @@ function class:update(dt)
             -- there is something more exciting to do
             self.current_task = next_task
 
-            -- choose a location to do that task
+            -- TODO this isn't deterministic, so we shouldn't be doing it twice
+            -- probably we need to optimistically setDestination when we determine
+            -- the natural next task above
             self:setDestination(self.current_task:getLocation(self.name))
 
+            zigspect("from", self.location, "towards", self.destination)
             if self.location ~= self.destination then
                 self.progress = 0
                 local current = game.map.graph.verts[self.location]
                 local direction = current.directions[self.destination].key
                 local subsequent = game.map.graph.verts[direction]
 
-                self:setDirection(subsequent.directions[self.destination].direction)
+                self:setDirection(current.directions[self.destination].direction)
             end
         end
     end

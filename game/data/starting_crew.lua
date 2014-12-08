@@ -3,30 +3,30 @@ local Task = game.classes.Task
 local starting_crew = {
     captain = {
         tasks = {
-            Task.new('porn'),
             Task.new('wander'),
-            Task.new('work', 'captain')
+            Task.new('work', 'captain'),
+            Task.new('porn')
         },
         walkspeed = 2,
-        initial_task = 3
+        initial_task = 2
     },
     cto = {
         tasks = {
             Task.new('porn'),
-            Task.new('wander'),
-            Task.new('work', 'cto')
+            Task.new('work', 'cto'),
+            Task.new('wander')
         },
         walkspeed = 1.5,
-        initial_task = 3
+        initial_task = 2
     },
     engineer = {
         tasks = {
             Task.new('porn'),
-            Task.new('wander'),
-            Task.new('work', 'engineer')
+            Task.new('work', 'engineer'),
+            Task.new('wander')
         },
         walkspeed = 1,
-        initial_task = 3
+        initial_task = 2
     },
     scientist = {
         tasks = {
@@ -39,7 +39,9 @@ local starting_crew = {
     },
     operator = {
         tasks = {
-            Task.new('work', 'operator')
+            Task.new('work', 'operator'),
+            Task.new('work', 'operator'),
+            Task.new('wander')
         },
         walkspeed = 0.5,
         initial_task = 1
