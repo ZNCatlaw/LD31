@@ -1,5 +1,8 @@
 local ui = Class('UI')
 
+ui.TEXT_COLOR = {0, 255, 48, 255}
+ui.HIGHLIGHT_COLOR = {251, 79, 20, 32}
+
 function ui:initialize()
     self.statusbox = {
         x = game.map.tilewidth * 1,
@@ -71,7 +74,7 @@ function ui:draw()
     if self.highlightLayer then
         love.mouse.setCursor(game.images.cursors.red)
         local r,g,b,a = love.graphics.getColor()
-        love.graphics.setColor(251,79,20,32)
+        love.graphics.setColor(ui.HIGHLIGHT_COLOR)
         game.map:drawTileLayer(self.highlightLayer)
         love.graphics.setColor(r,g,b,a)
     else
@@ -80,7 +83,7 @@ function ui:draw()
 
     local statusbox = self.statusbox
     local r,g,b,a = love.graphics.getColor()
-    love.graphics.setColor(0,255,64,255)
+    love.graphics.setColor(ui.TEXT_COLOR)
     local font = love.graphics.getFont()
 
     love.graphics.setFont(statusbox.headerFont)

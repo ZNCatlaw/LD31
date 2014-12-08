@@ -17,6 +17,9 @@ images.fonts['dialog'] = love.graphics.newFont('assets/fonts/Commodore Angled v1
 images.fonts['statusHeader'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 15)
 images.fonts['statusMessage'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 12)
 
+images.fonts['modalHeader'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 36)
+images.fonts['modalMessage'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 24)
+
 -- Cursors
 images.cursors = {}
 

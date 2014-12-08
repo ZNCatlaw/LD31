@@ -13,8 +13,8 @@ function state:leave()
 end
 
 function state:keypressed(key)
-  if (key == 'p') then
-    Gamestate.pop()
+  if (key == 'return') then
+    Gamestate.switch(game.states.play)
   elseif (key == 'escape') then
     love.event.quit()
   end
@@ -38,10 +38,12 @@ function state:draw()
   local centerY = love.viewport.getHeight() / 2
 
   love.graphics.setFont(game.images.fonts.modalHeader)
-  love.graphics.printf('PAUSED', 0, centerY - 64, screenWidth, "center")
+  love.graphics.setColor(255,0,0,255)
+  love.graphics.printf('YOUR SHIP ASPLODE', 0, centerY - 64, screenWidth, "center")
+  love.graphics.setColor(r,g,b,a)
 
   love.graphics.setFont(game.images.fonts.modalMessage)
-  love.graphics.printf("Press 'P' to continue.\nPress 'ESC' to quit.", 0, centerY + 32, screenWidth, "center")
+  love.graphics.printf("Press 'ENTER' to restart.\nPress 'ESC' to quit.", 0, centerY + 32, screenWidth, "center")
 
   love.graphics.setFont(font)
 end
