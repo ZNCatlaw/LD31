@@ -24,10 +24,10 @@ anims['cto'] = {
 
 anims['engineer'] = {
     image = spriteSheet,
-    walkdown = anim8.newAnimation(g('1-3', 1), walkspeed),
-    walkleft = anim8.newAnimation(g('1-3', 2), walkspeed),
-    walkright = anim8.newAnimation(g('1-3', 3), walkspeed),
-    walkup = anim8.newAnimation(g('1-3', 4), walkspeed),
+    walkdown = anim8.newAnimation(g('4-6', 5), walkspeed),
+    walkleft = anim8.newAnimation(g('4-6', 6), walkspeed),
+    walkright = anim8.newAnimation(g('4-6', 7), walkspeed),
+    walkup = anim8.newAnimation(g('4-6', 8), walkspeed),
 }
 
 anims['scientist'] = {
