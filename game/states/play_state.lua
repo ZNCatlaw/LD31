@@ -43,6 +43,19 @@ function state:enter()
         stations = game.data.stations,
         crew = game.data.starting_crew
     })
+    love.debug.print()
+    game.dialog = game.classes.DialogQueue.new({
+        game.classes.Dialog.new({message = 'CAPTAIN: Lomo skateboard leggings, twee American Apparel tofu butcher cronut organic. Mlkshk disrupt flannel, mustache tote bag twee cray.',
+            persist = true,
+            anim = game.data.anims.captain.walkdown:clone(),
+            image = game.images.peoplesprites,
+            font = game.images.fonts.c64_dialog}),
+        game.classes.Dialog.new({message = 'ENGINEER: Craft beer synth disrupt mustache lumbersexual. Brooklyn Intelligentsia XOXO health goth, retro.',
+            persist = true,
+            anim = game.data.anims.engineer.walkdown:clone(),
+            image = game.images.peoplesprites,
+            font = game.images.fonts.c64_dialog})
+    })
 end
 
 function state:leave()
@@ -77,6 +90,10 @@ function state:getHighlightLayer(x, y)
     end
 end
 
+function state:keypressed(key)
+    if key == 'x' then game.dialog:skipCurrent() end
+end
+
 function state:mousepressed(x, y, button)
     local room = self:getHighlightLayer(x, y)
     if room then
@@ -93,6 +110,8 @@ function state:update(dt)
     self.highlightLayer = self:getHighlightLayer(love.mouse.getPosition())
 
     game.ship:update(dt)
+
+    game.dialog:update(dt)
 
 --  if game.events:hasEvents() and game.events:willResolve() --[[ this is a countdown ]] then
 --      game.events:resolve() -- this behaviour is set in crew update, either relief or damage
@@ -124,6 +143,8 @@ function state:draw()
     else
         love.mouse.setCursor(game.images.cursors.default)
     end
+
+    game.dialog:draw(32, 96, 384)
 end
 
 return state
