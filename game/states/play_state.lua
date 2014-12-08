@@ -94,11 +94,7 @@ function state:update(dt)
 
     game.ship:update(dt)
 
---  if game.events:hasEvents() and game.events:willResolve() --[[ this is a countdown ]] then
---      game.events:resolve() -- this behaviour is set in crew update, either relief or damage
---  else
---      game.events:checkForEvents()
---  end
+    game.events:update(dt)
 end
 
 function state:draw()
