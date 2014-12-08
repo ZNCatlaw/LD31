@@ -9,16 +9,16 @@ local printMatrix = function (matrix)
 end
 
 function state:init()
-    self.map = STI.new('assets/maps/test')
-    self.map.graph = game.Graph.new(self.map)
+    game.map = STI.new('assets/maps/test')
+    game.map.graph = game.classes.Graph.new(game.map)
 
     -- build the sign posts
-    self.map.graph:build()
+    game.map.graph:build()
 
     -- Set map and tileset filters
     local filter = conf.defaultImageFilter
-    self.map.canvas:setFilter(unpack(filter))
-    for _,v in ipairs(self.map.tilesets) do
+    game.map.canvas:setFilter(unpack(filter))
+    for _,v in ipairs(game.map.tilesets) do
         v.image:setFilter(unpack(filter))
     end
 
@@ -39,7 +39,7 @@ function state:init()
 end
 
 function state:enter()
-    self.ship = game.classes.Ship.new({
+    game.ship = game.classes.Ship.new({
         stations = game.data.stations,
         crew = game.data.starting_crew
     })
@@ -56,7 +56,7 @@ function state:update(dt)
         star.offset = star.offset + dt^star.velocity
     end
 
-    self.ship:update(dt)
+    game.ship:update(dt)
 end
 
 function state:draw()
@@ -69,8 +69,10 @@ function state:draw()
     end
     love.graphics.setColor(r,g,b,a)
 
-    self.map:draw()
-    self.map.graph:draw()
+    game.map:draw()
+    game.map.graph:draw()
+
+    game.ship:draw()
 end
 
 return state
