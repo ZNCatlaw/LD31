@@ -53,23 +53,26 @@ function class:setDirection (direction)
 end
 
 function class:accrueBoredom (current_task, dt)
-    dt = dt/10
     -- TODO check for conditions that cause boredom to accrue faster, like scientist in a crowded room
+    
+    local rate = game.data.tasks.config.rate
+    local time_dilation = game.data.tasks.config.time_dilation
+    local check_frequency = game.data.tasks.config.check_frequency
 
     -- increment boredom for the current station
     -- decrement boredom for the other stations
     local next_task = current_task
     local rnd = love.math.random()
-    local may_switch = rnd < current_task.boredom*dt
+    local may_switch = rnd < current_task.boredom*(dt*check_frequency)
     local switched = false
 
     zigspect(rnd, current_task.boredom)
 
     for i, task in ipairs(self.tasks) do
-        local sign = (task.name == current_task.name) and 1 or -2
+        local sign = (task.name == current_task.name) and rate.increase or -rate.decrease
 
         -- TODO boredom should decrease more slowly than it increases
-        task.boredom = task.boredom + sign*dt
+        task.boredom = task.boredom + sign*(dt/time_dilation)
         task.boredom = math.min(math.max(task.boredom, 0), 1)
 
         zigspect("  ", task.name, task.boredom, current_task.boredom)
