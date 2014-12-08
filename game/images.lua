@@ -8,6 +8,6 @@ images['znc'] = love.graphics.newImage('assets/images/title-znc.png')
 images['clicktostart'] = love.graphics.newImage('assets/images/title-clicktostart.png')
 
 -- Spritesheets
-images['peoplesprites'] = love.graphics.newImage('assets/images/sprites/peoplesprites.png')
+images['peoplesprites'] = love.graphics.newImage('assets/maps/tilesets/peoplesprites.png')
 
 return images
