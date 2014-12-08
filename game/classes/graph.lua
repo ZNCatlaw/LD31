@@ -1,4 +1,4 @@
-local DIRECTIONS = { }
+DIRECTIONS = { }
 
 local NORTH = { dx = 0, dy = -1 }
 local EAST = { dx = 1, dy = 0 }
@@ -166,7 +166,7 @@ local function buildVerts (map)
 
                 -- next tile x and y
                 local vert = {
-                    x = x, y = y,
+                    x = x - 1, y = y - 1,
                     edges = {},
                     directions = {},
                     label = label,
