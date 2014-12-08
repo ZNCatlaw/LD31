@@ -82,7 +82,7 @@ function events:scheduleEvent (crew)
     self.current = crew
     self.message = event_messages[self.current]
 
-    self.timer.add(1, function ()
+    self.timer.add(5, function ()
         game.events:setWillResolve(true)
     end)
 end

@@ -155,11 +155,16 @@ function class:update(dt)
 
                 -- damage snowman when arriving at porn station
                 if self.current_task.name == "porn" then
-                    game.ship.snowman:damage()
+                    if not game.ship.stations["quarters"]:isDamagedOrBuggy() then
+                        game.ship.snowman:damage()
+                    end
                 end
 
+                -- turn on monitors when arriving at functional stations
                 if self.current_task.name == "work" then
-                    game.map.layers[self.name .. '_on'].visible = true
+                    if not game.ship.stations[self.name]:isDamagedOrBuggy() then
+                        game.map.layers[self.name .. '_on'].visible = true
+                    end
                 end
             end
         end

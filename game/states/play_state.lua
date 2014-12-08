@@ -93,9 +93,9 @@ function state:update(dt)
 
     self.highlightLayer = self:getHighlightLayer(love.mouse.getPosition())
 
-    game.ship:update(dt)
-
     game.events:update(dt)
+
+    game.ship:update(dt)
 
     if game.ship:shouldAsplode() then
         error("YOUR SHIP ASPLODE")
