@@ -35,23 +35,29 @@ function class:update(dt)
     if self.destination ~= self.location then
         -- walk in the current direction
         self.progress = self.progress + dt*10 -- TODO remove this 10
+
+        if self.progress > 1 then
+            self.progress = 0
+            local current = game.map.graph.verts[self.location]
+            local direction = current.directions[self.destination].key
+            local subsequent = game.map.graph.verts[direction]
+
+            self.location = subsequent.name
+            self.x = subsequent.x
+            self.y = subsequent.y
+
+            if self.location ~= self.destination then
+                -- pivot into the next direction
+                self.direction = subsequent.directions[self.destination].direction
+            else
+                -- facing is chosen by the station
+            end
+        end
     else
         self.destination = "engineer"
         -- work, download porn, what-have you
     end
 
-    if self.progress > 1 then
-        self.progress = 0
-        local current = game.map.graph.verts[self.location]
-        local direction = current.directions[self.destination].key
-        local subsequent = game.map.graph.verts[direction]
-
-        self.x = subsequent.x
-        self.y = subsequent.y
-
-        self.location = subsequent.name
-        self.direction = subsequent.directions[self.destination].direction
-    end
 end
 
 function class:draw()
