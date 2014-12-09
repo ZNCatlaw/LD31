@@ -167,7 +167,6 @@ function class:trySwitchingTasks (current_task, task, opts)
 end
 
 function class:setDestination(new_destination)
-    zigspect(new_destination)
     local location = string.gsub(self.location, '_.', '')
     local station = string.gsub(new_destination, '_.', '')
     local old_station = string.gsub(self.destination, '_.', '')
@@ -299,8 +298,9 @@ function class:update(dt)
 --          end
 --      end
 
-        if next_task and self.current_task ~= next_task then
-            next_location = next_task:getLocation(self.name)
+        next_location = next_task:getLocation(self.name)
+
+        if next_task and next_location and self.current_task ~= next_task then
             self:updateDestination(next_task, next_location)
         end
     end

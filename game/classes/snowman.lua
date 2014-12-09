@@ -31,6 +31,10 @@ function class:mousepressed (room, button)
         -- send engineer to the room
         local crew = game.ship.crew['engineer']
 
+        for i, station in pairs(game.ship.stations) do
+            station.warning = false
+        end
+
         game.ship.stations[room].warning = true
 
         crew:tryForceWander(crew.current_task, room)
@@ -38,6 +42,10 @@ function class:mousepressed (room, button)
     elseif button == 'r' then
         -- send cto to the room
         local crew = game.ship.crew['cto']
+
+        for i, station in pairs(game.ship.stations) do
+            station.buggy = false
+        end
 
         game.ship.stations[room].buggy = true
 

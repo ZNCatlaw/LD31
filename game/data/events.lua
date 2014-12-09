@@ -1,3 +1,5 @@
+local event_rate = 5
+
 local operator_barks = {
     "OPERATOR: Transporter room, ready to go.",
     "OPERATOR: I could transport you all into space right now if I wanted.",
@@ -137,7 +139,7 @@ function events:scheduleEvent (crew)
         game.ui:addEventStatus(event_messages[crew]["warning"])
     end
 
-    self.timer.add(3, function ()
+    self.timer.add(event_rate, function ()
         game.events:setWillResolve(true)
     end)
 end
