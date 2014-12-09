@@ -95,17 +95,15 @@ end
 local performWander = function (self, crew)
     if crew.name == "cto" then
         -- debug the current location
-        zigspect(game.ship.stations)
-        if game.ship.stations[crew.location] then
-            game.ship.stations[crew.location]:debug()
-        end
+        zigspect(game.ship.stations, crew.location)
+        local location = string.gsub(crew.location, "_.", "")
+        game.ship.stations[location]:debug()
 
     elseif crew.name == "engineer" then
         -- repair the current location
-        zigspect(game.ship.stations)
-        if game.ship.stations[crew.location] then
-            game.ship.stations[crew.location]:repair()
-        end
+        zigspect(game.ship.stations, crew.location)
+        local location = string.gsub(crew.location, "_.", "")
+        game.ship.stations[location]:repair()
     end
 end
 
