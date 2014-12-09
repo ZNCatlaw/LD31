@@ -3,6 +3,10 @@ local tasks = {
 
     },
     work = {
+        cto = {
+            -- cto will deporn once every 5 seconds
+            deporn_rate = 3
+        }
 
     },
     wander = {
