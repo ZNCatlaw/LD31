@@ -1,4 +1,5 @@
 local operator_barks = {
+    "Transporter room, ready to go.",
     "I could transport you all into space right now if I wanted.",
     "Hello?",
     "Does anyone need anything transported? No?"
@@ -6,32 +7,35 @@ local operator_barks = {
 
 local captain_barks = {
     "Crew to the bridge!",
-    "My cat's breath smells like cat food!"
+    "My cat's breath smells like cat food!",
+    "Engage!",
+    "Make it so!",
+    "Tea, Earl Grey, Hot."
 }
 
 local event_messages = {
     scientist = {
-        success = "Eureka!",
-        failure = "My calculations were perfect...",
+        success = "Eureka! I have solved it!",
+        failure = "But my calculations were perfect...",
         warning = "Space anomaly detected! Science officer to the science bay!",
         mia = "The scientist didn't arrive in time."
     },
     engineer = {
         success = "All in a day's work...",
         failure = "The engines won't hold!",
-        warning = "Engine malfunction imminent! Engineer to engineering! ",
+        warning = "Engine malfunction imminent! Engineer to engineering!",
         mia = "The engineer didn't arrive in time."
     },
     cto = {
         success = "This is a unix system... I know this!",
         failure = "Off by one!",
         warning = "Malware detected! CTO to quantum super computer terminal!",
-        porn = "Exposure to the internet seems to be affecting SNOWMAN's systems...",
+        porn = "Exposure to the internet seems to be affecting S.N.O.W.M.A.N.'s systems...",
         mia = "The CTO didn't arrive in time."
 
     },
     captain = {
-        success = "Excellent work, everyone.",
+        success = "Enemy neutralized. Excellent work, everyone.",
         failure = "Where was the captain!?",
         warning = "Enemy ships incoming! Captain on the bridge!",
         mia = "The captain didn't arrive in time."
