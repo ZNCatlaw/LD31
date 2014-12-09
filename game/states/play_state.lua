@@ -46,7 +46,7 @@ function state:enter()
     })
 
     TEsound.stop('music')
-    TEsound.playLooping('assets/music/pulselooper-kalterkrieg.mp3', 'music', 0.75)
+    TEsound.playLooping('assets/music/pulselooper-kalterkrieg.mp3', 'music', 0.5)
 end
 
 function state:leave()

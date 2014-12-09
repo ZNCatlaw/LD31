@@ -152,6 +152,9 @@ function ui:draw()
     love.graphics.setColor(ui.TEXT_COLOR)
     local font = love.graphics.getFont()
 
+    love.graphics.setFont(statusbox.messageFont)
+    love.graphics.printf("Use Left & Right mouse buttons to direct the crew! Stay operational!", 32, 528, 192, 'center')
+
     love.graphics.setFont(statusbox.headerFont)
     love.graphics.printf(statusbox.header, statusbox.x, statusbox.y, statusbox.w)
 

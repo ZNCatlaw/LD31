@@ -14,7 +14,7 @@ function Viewport:initialize(opts)
         scale  = 0,
         multiple = 1,
         filter = {'nearest', 'nearest', 0},
-        fs     = false,
+        fs     = true,
         cb     = function() end
     }, opts)
 

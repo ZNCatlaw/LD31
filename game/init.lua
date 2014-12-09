@@ -6,4 +6,4 @@ game.states = require('game/states')
 game.events = game.data.events
 
 love.mouse.setCursor(game.images.cursors.default)
-Gamestate.switch(game.states.play)
+Gamestate.switch(game.states.title)

@@ -6,7 +6,7 @@ function love.load()
         height = conf.window.height,
         multiple = 0.5,
         filter = conf.defaultImageFilter,
-        fs = false,
+        fs = true,
         cb = function(params)
             local pScale = love.window.getPixelScale()
             if game.map then
