@@ -3,8 +3,9 @@ local state = {}
 function state:init()
 end
 
-function state:enter(from)
+function state:enter(from, splode)
   self.from = from
+  self.splode = splode
   TEsound.volume('music', 0.5)
 end
 
@@ -43,7 +44,19 @@ function state:draw()
   love.graphics.setColor(r,g,b,a)
 
   love.graphics.setFont(game.images.fonts.modalMessage)
-  love.graphics.printf("Press 'ENTER' to restart.\nPress 'ESC' to quit.", 0, centerY + 32, screenWidth, "center")
+  local splode = self.splode
+
+  love.graphics.setColor(128,255,128,255)
+  love.graphics.printf('Malfunctions: '..splode.malfunction..'/7', 0, centerY - 16, screenWidth, "center")
+
+  love.graphics.setColor(128,128,255,255)
+  love.graphics.printf('Corruption: '..splode.corruption..'/7', 0, centerY + 8, screenWidth, "center")
+
+  love.graphics.setColor(255,128,128,255)
+  love.graphics.printf('Damage: '..splode.damage..'/7', 0, centerY + 32 , screenWidth, "center")
+
+  love.graphics.setColor(r,g,b,a)
+  love.graphics.printf("Press 'ENTER' to restart.\nPress 'ESC' to quit.", 0, centerY + 64, screenWidth, "center")
 
   love.graphics.setFont(font)
 end

@@ -31,7 +31,6 @@ for i=1,7 do
     images.ui['bar_'..str] = love.graphics.newImage('assets/images/ui/bar_'..str..'.png')
   end
 end
-love.debug.print(images.ui)
 
 -- Cursors
 images.cursors = {}

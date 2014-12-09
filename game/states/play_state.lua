@@ -94,8 +94,9 @@ function state:update(dt)
     game.ui:update(dt)
     game.dialog:update(dt)
 
-    if game.ship:shouldAsplode() then
-        Gamestate.push(game.states.lose)
+    local splode = game.ship:shouldAsplode()
+    if splode then
+        Gamestate.push(game.states.lose, splode)
     end
 end
 
