@@ -4,6 +4,11 @@ local operator_barks = {
     "Does anyone need anything transported? No?"
 }
 
+local captain_barks = {
+    "Crew to the bridge!",
+    "My cat's breath smells like cat food!"
+}
+
 local event_messages = {
     scientist = {
         success = "Eureka!",
@@ -35,6 +40,10 @@ local event_messages = {
 
 -- returns a random bark from the operator
 local function operatorBark ()
+    return operator_barks[love.math.random(1, #operator_barks)]
+end
+
+local function captainBark ()
     return operator_barks[love.math.random(1, #operator_barks)]
 end
 

@@ -25,6 +25,8 @@ function class:initialize(name, data)
     self.occupancy = {}
     self._damage = false
     self._malfunction = false
+
+    self.count = 0
 end
 
 function class:isDamaged()
@@ -81,11 +83,18 @@ function class:debug()
 end
 
 function class:update(dt)
-
+    self.count = self.count + dt
 end
 
 function class:draw()
+    local decorations = { 'none', }
+    if self._malfunction then table.insert(decorations, self.name ..'_malfunction') end
+    if self._damage then table.insert(decorations, self.name ..'_damage') end
 
+    local drawLayer = decorations[math.ceil(self.count*2 % #decorations)]
+    if drawLayer ~= 'none' then
+        game.map:drawTileLayer(drawLayer)
+    end
 end
 
 --
