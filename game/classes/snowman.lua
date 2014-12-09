@@ -35,6 +35,9 @@ function class:mousepressed (room, button)
 
     elseif button == 'r' then
         -- send cto to the room
+        local crew = game.ship.crew['cto']
+
+        crew:tryForceWander(crew.current_task, room)
     end
 end
 
