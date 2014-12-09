@@ -44,7 +44,7 @@ local function operatorBark ()
 end
 
 local function captainBark ()
-    return operator_barks[love.math.random(1, #operator_barks)]
+    return captain_barks[love.math.random(1, #operator_barks)]
 end
 
 -- TODO station should be chosen randomly
@@ -82,26 +82,26 @@ end
 local events = {
     scientist = {
         success = function ()
-            game.ui:addEventDialogue(event_messages["scientist"]["success"])
+            game.ui:addEventDialogue(event_messages["scientist"]["success"], 'scientist')
         end,
         fail = damageShip
 
     },
     engineer = {
         success = function ()
-            game.ui:addEventDialogue(event_messages["engineer"]["success"])
+            game.ui:addEventDialogue(event_messages["engineer"]["success"], 'engineer')
         end,
         fail = damageShip
     },
     captain = {
         success = function ()
-            game.ui:addEventDialogue(event_messages["captain"]["success"])
+            game.ui:addEventDialogue(event_messages["captain"]["success"], 'captain')
         end,
         fail = damageShip
     },
     cto = {
         success = function ()
-            game.ui:addEventDialogue(event_messages["cto"]["success"])
+            game.ui:addEventDialogue(event_messages["cto"]["success"], 'cto')
         end,
         fail = malfunctionShip
     },
@@ -120,6 +120,14 @@ events.averted = false
 function events:scheduleEvent (crew)
     self.current = crew
     self.message = event_messages[self.current]
+
+    local randomBark = love.math.random(1, 5)
+    if randomBark == 5 then
+        game.ui:addEventDialogue(operatorBark(), 'operator')
+    elseif randomBark >= 3 then
+        game.ui:addEventDialogue(captainBark(), 'captain')
+    end
+
 
     if event_messages[crew] then
         game.ui:addEventStatus(event_messages[crew]["warning"])
