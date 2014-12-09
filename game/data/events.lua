@@ -1,42 +1,42 @@
 local operator_barks = {
-    "Transporter room, ready to go.",
-    "I could transport you all into space right now if I wanted.",
-    "Hello?",
-    "Does anyone need anything transported? No?"
+    "OPERATOR: Transporter room, ready to go.",
+    "OPERATOR: I could transport you all into space right now if I wanted.",
+    "OPERATOR: Hello?",
+    "OPERATOR: Does anyone need anything transported? No?"
 }
 
 local captain_barks = {
-    "Crew to the bridge!",
-    "My cat's breath smells like cat food!",
-    "Engage!",
-    "Make it so!",
-    "Tea, Earl Grey, Hot."
+    "CAPTAIN: Crew to the bridge!",
+    "CAPTAIN: My cat's breath smells like cat food!",
+    "CAPTAIN: Engage!",
+    "CAPTAIN: Make it so!",
+    "CAPTAIN: Tea, Earl Grey, Hot."
 }
 
 local event_messages = {
     scientist = {
-        success = "Eureka! I have solved it!",
-        failure = "But my calculations were perfect...",
+        success = "SCIENTIST: Eureka! I have solved it!",
+        failure = "SCIENTIST: But my calculations were perfect...",
         warning = "Space anomaly detected! Science officer to the science bay!",
         mia = "The scientist didn't arrive in time."
     },
     engineer = {
-        success = "All in a day's work...",
-        failure = "The engines won't hold!",
+        success = "ENGINEER: All in a day's work...",
+        failure = "ENGINEER: The engines won't hold!",
         warning = "Engine malfunction imminent! Engineer to engineering!",
         mia = "The engineer didn't arrive in time."
     },
     cto = {
-        success = "This is a unix system... I know this!",
-        failure = "Off by one!",
+        success = "CTO: This is a unix system... I know this!",
+        failure = "CTO: Oh no! Off by one!",
         warning = "Malware detected! CTO to quantum super computer terminal!",
-        porn = "Exposure to the internet seems to be affecting S.N.O.W.M.A.N.'s systems...",
+        porn = "CTO: Exposure to the internet seems to be affecting S.N.O.W.M.A.N.'s systems...",
         mia = "The CTO didn't arrive in time."
 
     },
     captain = {
-        success = "Enemy neutralized. Excellent work, everyone.",
-        failure = "Where was the captain!?",
+        success = "CAPTAIN: Enemy neutralized. Excellent work, everyone.",
+        failure = "CAPTAIN: We barely got away!",
         warning = "Enemy ships incoming! Captain on the bridge!",
         mia = "The captain didn't arrive in time."
     }
