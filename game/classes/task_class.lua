@@ -63,11 +63,14 @@ local performPorn = function (self, crew)
     end
 
     if not game.ship.stations["quarters"]:isDamagedOrMalfunction() then
-        game.ship.snowman:damage()
+        -- the cto does no harm
+        if crew.name ~= "cto" then
+            game.ship.snowman:damage()
+        end
     end
 end
 
-local performWork = function (self, crew)
+local performWork = function (self, crew, dt)
     -- engineer repairs damage to his station
     if crew.name == "engineer" then
         local engineering = game.ship.stations[crew.name]
@@ -80,6 +83,13 @@ local performWork = function (self, crew)
     -- engineer repairs damage to his station
     if crew.name == "cto" then
         local super_computer = game.ship.stations[crew.name]
+
+        crew.work_progress = crew.work_progress + dt
+        if crew.work_progress > game.data.tasks.work.cto.deporn_rate then
+            zigspect("DEPORN")
+            crew.work_progress = 0
+            game.ship.snowman:repair()
+        end
 
         if not super_computer:isMalfunction() then
             super_computer:debug()

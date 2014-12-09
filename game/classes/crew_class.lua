@@ -22,6 +22,7 @@ function class:initialize(name, data)
     self.x = vert.x
     self.y = vert.y
     self.progress = 0
+    self.work_progress = 0
     self.destination = name
     self.location = name
 
@@ -272,7 +273,7 @@ function class:update(dt)
 
         -- work, download porn, what-have you
         if self.current_task.name == "work" then
-            self.current_task:perform(self)
+            self.current_task:perform(self, dt)
         end
 
         if self:isWaiting() then return end
