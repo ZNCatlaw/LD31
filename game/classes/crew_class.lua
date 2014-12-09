@@ -106,7 +106,9 @@ function class:tryForceWander (current_task, room)
 
     next_location = wander:getLocation(self.name, { room = room })
 
-    self:updateDestination(wander, next_location)
+    if next_location then
+        self:updateDestination(wander, next_location)
+    end
 end
 
 function class:trySwitchingTasks (current_task, task, opts)
