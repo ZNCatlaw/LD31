@@ -1,5 +1,5 @@
 function love.conf(t)
-    t.window.title = "S.N.O.W.M.A.N."
+    t.window.title = "S.N.O.W.M.A.N. (v1.0-LD31)"
 
     t.window.resizable = false
 
