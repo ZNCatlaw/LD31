@@ -1,4 +1,4 @@
-local event_rate = 4
+local event_rate = 3
 
 local operator_barks = {
     "OPERATOR: Transporter room, ready to go.",
