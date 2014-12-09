@@ -117,12 +117,12 @@ require('love/misc')
 require('love/run')
 
 -- So that ziggy can see all the debug messages he wants but I don't have to!
-love.debug.setFlag('zigs')
+--love.debug.setFlag('zigs')
 zigspect = function(...)
     love.debug.printIf('zigs', ...)
 end
 
-love.debug.setFlag('tim')
+--love.debug.setFlag('tim')
 timspect = function(...)
     love.debug.printIf('tim', ...)
 end

@@ -39,10 +39,14 @@ function state:init()
 end
 
 function state:enter()
+    game.ui = game.classes.UI.new()
     game.ship = game.classes.Ship.new({
         stations = game.data.stations,
         crew = game.data.starting_crew
     })
+
+    TEsound.stop('music')
+    TEsound.playLooping('assets/music/pulselooper-kalterkrieg.mp3', 'music', 0.75)
 end
 
 function state:leave()
@@ -51,38 +55,20 @@ end
 function state:resume()
 end
 
-function state:getMouseTile(x,y)
-    local r_scale =  love.viewport.r_scale
-    local mouseX, mouseY = love.mouse.getPosition()
-    mouseX = (mouseX - love.viewport.draw_ox) / r_scale
-    mouseY = (mouseY - love.viewport.draw_oy) / r_scale
-
-    local mapWidth = game.map.width
-    local mapHeight = game.map.height
-
-    local mouseTileX, mouseTileY = game.map:convertScreenToTile(mouseX, mouseY)
-    mouseTileX = math.max(1, math.min(math.ceil(mouseTileX), mapWidth))
-    mouseTileY = math.max(1, math.min(math.ceil(mouseTileY), mapHeight))
-
-    return mouseTileX, mouseTileY
-end
-
-function state:getHighlightLayer(x, y)
-    local mouseTileX, mouseTileY = self:getMouseTile(x, y)
-    for k,v in pairs(game.map.layers) do
-        local name = v.name
-        if (name:find('_highlight') and v['data'][mouseTileY][mouseTileX]) then
-            return name
-        end
+function state:keypressed(key)
+    if (key == 'p' or key == 'q' or key == 'escape') then
+        Gamestate.push(game.states.pause)
+    elseif (key == ' ' or key == 'return') then
+        self.ui.dialog:skipCurrent()
     end
 end
 
 function state:mousepressed(x, y, button)
-    local room = self:getHighlightLayer(x, y)
-    if room then
-        room = room:gsub('_highlight','')
-        timspect('CLICKED!', room, button)
-    end
+    game.ui:mousepressed(x, y, button)
+end
+
+function state:focus(f)
+    if not f then Gamestate.push(game.states.pause) end
 end
 
 function state:update(dt)
@@ -90,15 +76,14 @@ function state:update(dt)
         star.offset = star.offset + dt^star.velocity
     end
 
-    self.highlightLayer = self:getHighlightLayer(love.mouse.getPosition())
-
+    game.events:update(dt)
     game.ship:update(dt)
+    game.ui:update(dt)
 
---  if game.events:hasEvents() and game.events:willResolve() --[[ this is a countdown ]] then
---      game.events:resolve() -- this behaviour is set in crew update, either relief or damage
---  else
---      game.events:checkForEvents()
---  end
+    local splode = game.ship:shouldAsplode()
+    if splode then
+        Gamestate.push(game.states.lose, splode)
+    end
 end
 
 function state:draw()
@@ -115,15 +100,8 @@ function state:draw()
 
     game.ship:draw()
 
-    if self.highlightLayer then
-        love.mouse.setCursor(game.images.cursors.red)
-        local r,g,b,a = love.graphics.getColor()
-        love.graphics.setColor(251,79,20,32)
-        game.map:drawTileLayer(self.highlightLayer)
-        love.graphics.setColor(r,g,b,a)
-    else
-        love.mouse.setCursor(game.images.cursors.default)
-    end
+    game.ui:draw()
+
 end
 
 return state

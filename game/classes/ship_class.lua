@@ -15,6 +15,21 @@ function class:initialize(opts)
             self.stations[k].occupancy[k] = true
         end
     end
+
+    self.snowman = game.classes.Snowman.new()
+
+    self.damage = 0
+    self.malfunction = 0
+end
+
+function class:shouldAsplode()
+    if (self.snowman:getDamage() == 7 or self.malfunction == 7 or self.damage == 7) then
+        return {
+            malfunction = self.malfunction,
+            corruption = self.snowman:getDamage(),
+            damage = self.damage
+        }
+    end
 end
 
 function class:update(dt)

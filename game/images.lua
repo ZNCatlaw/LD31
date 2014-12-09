@@ -10,6 +10,29 @@ images['clicktostart'] = love.graphics.newImage('assets/images/title-clicktostar
 -- Spritesheets
 images['peoplesprites'] = love.graphics.newImage('assets/maps/tilesets/peoplesprites.png')
 
+-- Fonts
+images.fonts = {}
+
+images.fonts['dialog'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 18)
+images.fonts['statusHeader'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 15)
+images.fonts['statusMessage'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 12)
+
+images.fonts['modalHeader'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 36)
+images.fonts['modalMessage'] = love.graphics.newFont('assets/fonts/Commodore Angled v1.2.ttf', 24)
+
+-- UI
+images.ui = {}
+images.ui.title = love.graphics.newImage('assets/images/ui/title.png')
+images.ui.bar = love.graphics.newImage('assets/images/ui/bar.png')
+images.ui.bar_bg = love.graphics.newImage('assets/images/ui/bar_bg.png')
+images.ui.bar_snowman = love.graphics.newImage('assets/images/ui/bar_snowman.png')
+for i=1,7 do
+  for _,v in ipairs({'r','g','b'}) do
+    local str = v..tostring(i)
+    images.ui['bar_'..str] = love.graphics.newImage('assets/images/ui/bar_'..str..'.png')
+  end
+end
+
 -- Cursors
 images.cursors = {}
 
