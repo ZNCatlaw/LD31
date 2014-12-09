@@ -1,12 +1,15 @@
 local class = Class('DialogQueue')
 
 function class:initialize(dialogs)
-    self.dialogs = dialogs or {}
+    self.dialogs = {}
+    if(type(dialogs) == 'table') then
+        for _,v in pairs(dialogs) do self:add(v)  end
+    end
 end
 
 function class:add(dialog)
     if(type(dialog) == 'table') then
-        table.insert(self.dialogs, dialog)
+        table.insert(self.dialogs, game.classes.Dialog.new(dialog))
     end
 end
 
