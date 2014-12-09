@@ -80,6 +80,9 @@ function ui:drawMeter(c, units, x, y)
 end
 
 function ui:draw()
+    -- Title image
+    love.graphics.draw(self.images.title, 32, 32)
+
     -- Highlight Layer
     if self.highlightLayer then
         love.mouse.setCursor(game.images.cursors.red)
