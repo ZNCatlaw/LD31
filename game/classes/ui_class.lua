@@ -14,12 +14,9 @@ function ui:initialize()
         message = ''
     }
 
-    self.dialog = game.classes.DialogQueue.new({
-        {message = 'CAPTAIN: Lomo skateboard leggings, twee American Apparel tofu butcher cronut organic. Mlkshk disrupt flannel, mustache tote bag twee cray.',
-            crew = 'captain'},
-        {message = 'ENGINEER: Craft beer synth disrupt mustache lumbersexual. Brooklyn Intelligentsia XOXO health goth, retro.',
-            crew = 'engineer'},
-    })
+    self.warning = game.classes.DialogQueue.new()
+
+    self.dialog = game.classes.DialogQueue.new()
 
     self.images = game.images.ui
 end
@@ -61,6 +58,7 @@ function ui:mousepressed(x, y, button)
 end
 
 function ui:update(dt)
+    self.warning:update(dt)
     self.dialog:update(dt)
 
     local statusbox = self.statusbox
@@ -84,9 +82,27 @@ function ui:update(dt)
 end
 
 function ui:addEventDialogue (message, name)
+    self.dialog:add({
+        message = message,
+        crew = name,
+        color = {255, 255, 255, 255}
+    })
 end
 
 function ui:addEventStatus (message, posture)
+    local color = nil
+    if(posture == 'positive') then
+        color = {128, 128, 255, 255}
+    elseif (posture == 'negative') then
+        color = {255, 128, 128, 255}
+    end
+
+
+    self.warning:add({
+        message = message,
+        font = game.images.fonts.statusHeader,
+        color = color
+    })
 end
 
 function ui:drawMeter(c, units, x, y)
@@ -113,7 +129,9 @@ function ui:draw()
     end
 
     -- Dialogue
-    self.dialog:draw(32, 96, 384)
+    self.warning:draw(24, 256, 208)
+
+    self.dialog:draw(32, 112, 400)
 
     -- Health Bar
     local barX = 3 * 32

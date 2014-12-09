@@ -3,6 +3,8 @@ local class = Class('Dialog')
 function class:initialize(opts)
     if type(opts) ~= 'table' then opts = {} end
 
+    love.debug.print(opts)
+
     self.message = opts.message or ''
     self.speed = opts.speed or 12
 
@@ -14,6 +16,9 @@ function class:initialize(opts)
     end
 
     self.font = opts.font or game.images.fonts.dialog
+    self.color = opts.color or {0, 255, 64, 255}
+
+    love.debug.print(self.color)
 
     self.progress = 0
 
@@ -74,7 +79,7 @@ function class:draw(x, y, w)
 
     local msg = string.sub(self.message, 1, math.floor(self.progress))
 
-    if self.caretcount >= self.caretrate then
+    if msg == self.message and self.caretcount >= self.caretrate then
       msg = msg..'_'
     end
 
@@ -90,7 +95,8 @@ function class:draw(x, y, w)
     end
 
     local r,g,b,a = love.graphics.getColor()
-    love.graphics.setColor(0,255,64,255)
+    love.graphics.setColor(self.color)
+
     local font = love.graphics.getFont()
     if self.font then love.graphics.setFont(self.font) end
 

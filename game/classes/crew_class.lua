@@ -105,7 +105,7 @@ function class:tryForceWander (current_task, room)
 
     next_location = wander:getLocation(self.name, { room = room })
 
-    zigspect(next_location)
+    self:updateDestination(wander, next_location)
 end
 
 function class:trySwitchingTasks (current_task, task, opts)
@@ -165,17 +165,50 @@ function class:trySwitchingTasks (current_task, task, opts)
     return next_task
 end
 
-function class:setDestination(destination)
-    zigspect(destination)
+function class:setDestination(new_destination)
+    zigspect(new_destination)
     local location = string.gsub(self.location, '_.', '')
-    local station = string.gsub(destination, '_.', '')
+    local station = string.gsub(new_destination, '_.', '')
+    local old_station = string.gsub(self.destination, '_.', '')
 
     love.debug.printIf("crew_class", "setDestination", location, station)
 
-    game.ship.stations[location].occupancy[self.location] = false
-    game.ship.stations[station].occupancy[destination] = true
+    zigspect(location, self.location, self.destination, new_destination, station)
 
-    self.destination = destination
+    -- might just be wandering the halls
+    if game.ship.stations[location] then
+        game.ship.stations[location].occupancy[self.location] = false
+    end
+
+    -- switch destinations, emptying out the old one
+    game.ship.stations[station].occupancy[new_destination] = true
+    game.ship.stations[old_station].occupancy[self.destination] = false
+
+    self.destination = new_destination
+end
+
+function class:updateDestination (next_task, next_location)
+    love.debug.printIf("crew_class", self.name, "switching to", next_task.name)
+    -- there is something more exciting to do
+    self.current_task = next_task
+
+    if self.current_task.name ~= "work" then
+        game.map.layers[self.name .. '_on'].visible = false
+    end
+    -- TODO this isn't deterministic, so we shouldn't be doing it twice
+    -- probably we need to optimistically setDestination when we determine
+    -- the natural next task above
+    self:setDestination(next_location)
+
+    -- love.debug.printIf("crew_class", "from", self.location, "towards", self.destination)
+    if self.location ~= self.destination then
+        self.progress = 0
+        local current = game.map.graph.verts[self.location]
+        local direction = current.directions[self.destination].key
+        local subsequent = game.map.graph.verts[direction]
+
+        self:setDirection(current.directions[self.destination].direction)
+    end
 end
 
 function class:update(dt)
@@ -233,6 +266,9 @@ function class:update(dt)
     else
         -- accrueboredom and determine possible next task
         local next_task = self:accrueBoredom(self.current_task, dt)
+        if next_task == nil then
+            error("NEXT TASK WAS NIL")
+        end
 
         -- work, download porn, what-have you
         if self.current_task.name == "work" then
@@ -263,27 +299,8 @@ function class:update(dt)
 --      end
 
         if next_task and self.current_task ~= next_task then
-            love.debug.printIf("crew_class", self.name, "switching to", next_task.name)
-            -- there is something more exciting to do
-            self.current_task = next_task
-
-            if self.current_task.name ~= "work" then
-                game.map.layers[self.name .. '_on'].visible = false
-            end
-            -- TODO this isn't deterministic, so we shouldn't be doing it twice
-            -- probably we need to optimistically setDestination when we determine
-            -- the natural next task above
-            self:setDestination(self.current_task:getLocation(self.name))
-
-            -- love.debug.printIf("crew_class", "from", self.location, "towards", self.destination)
-            if self.location ~= self.destination then
-                self.progress = 0
-                local current = game.map.graph.verts[self.location]
-                local direction = current.directions[self.destination].key
-                local subsequent = game.map.graph.verts[direction]
-
-                self:setDirection(current.directions[self.destination].direction)
-            end
+            next_location = next_task:getLocation(self.name)
+            self:updateDestination(next_task, next_location)
         end
     end
 
