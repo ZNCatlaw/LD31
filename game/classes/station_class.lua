@@ -91,6 +91,16 @@ function class:draw()
     if self._malfunction then table.insert(decorations, self.name ..'_malfunction') end
     if self._damage then table.insert(decorations, self.name ..'_damage') end
 
+    if self.buggy then
+        table.insert(decorations, self.name ..'_buggy')
+        table.insert(decorations, self.name ..'_buggy')
+    end
+
+    if self.warning then
+        table.insert(decorations, self.name ..'_warning')
+        table.insert(decorations, self.name ..'_warning')
+    end
+
     local drawLayer = decorations[math.ceil(self.count*2 % #decorations)]
     if drawLayer ~= 'none' then
         game.map:drawTileLayer(drawLayer)

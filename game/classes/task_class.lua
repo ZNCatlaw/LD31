@@ -108,12 +108,14 @@ local performWander = function (self, crew)
         zigspect(game.ship.stations, crew.location)
         local location = string.gsub(crew.location, "_.", "")
         game.ship.stations[location]:debug()
+        game.ship.stations[location].buggy = false
 
     elseif crew.name == "engineer" then
         -- repair the current location
         zigspect(game.ship.stations, crew.location)
         local location = string.gsub(crew.location, "_.", "")
         game.ship.stations[location]:repair()
+        game.ship.stations[location].warning = false
     end
 end
 

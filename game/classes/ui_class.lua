@@ -70,9 +70,11 @@ function ui:update(dt)
 
         statusbox.header = station.niceName
         local msg = table.concat({
-            station.occupancy[stationID] and " Currently in use :)\n" or "Not in use :\\\n",
-            station:isDamaged() and "  DAMAGED! :(\n" or "\n",
-            station:isMalfunction() and "  MALFUNCTIONING! :(\n" or ''
+            station.occupancy[stationID] and " In use :)\n" or "Not in use\n",
+            station:isDamaged() and "  DAMAGED\n" or "\n",
+            station.warning and "    (WARNING SET)\n" or "\n",
+            station:isMalfunction() and "  MALFUNCTIONING\n" or "\n",
+            station.buggy and "    (BUGGY SET)\n" or "\n",
         })
         statusbox.message = msg
     else
