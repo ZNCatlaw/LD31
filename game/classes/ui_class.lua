@@ -47,6 +47,8 @@ function ui:mousepressed(x, y, button)
     if room then
         room = room:gsub('_highlight','')
         timspect('CLICKED!', room, button)
+
+        game.ship.snowman:mousepressed(room, button)
     end
 end
 

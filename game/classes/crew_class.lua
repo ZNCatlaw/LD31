@@ -88,62 +88,85 @@ function class:accrueBoredom (current_task, dt)
         --love.debug.printIf("crew_class", "  ", task.name, task.boredom, current_task.boredom)
         -- is may switch and has not switched and task being considered is less boring
         if not switched and may_switch and next_task == current_task and task.boredom < current_task.boredom then
-            local damaged, malfunction, occupied = false, false, false
-
-            love.debug.printIf("boredom", "-------------------------")
-            love.debug.printIf("boredom", self.name, "attempt switch to", task.name)
-
-            next_location = task:getLocation(self.name)
-
-            -- can't do a thing at an occupied location
-            occupied = (next_location == nil)
-
-            -- can't work at a damaged station
-            if task.name == "work" and self.name ~= "engineer" then
-                damaged = game.ship.stations[next_location]:isDamaged()
-
-                if damaged then
-                    love.debug.printIf("boredom", "couldn't work because damaged")
-                end
-            elseif task.name == "porn" and self.name ~= "engineer" then
-                damaged = game.ship.stations["quarters"]:isDamaged()
-
-                if damaged then
-                    love.debug.printIf("boredom", "couldn't porn because damaged")
-                end
-            end
-
-            -- can't work at a buggy station
-            if task.name == "work" and self.name ~= "cto" then
-                malfunction = game.ship.stations[next_location]:isMalfunction()
-
-                if damaged then
-                    love.debug.printIf("boredom", "couldn't work because malfunction")
-                end
-            elseif task.name == "porn" and self.name ~= "cto" then
-                malfunction = game.ship.stations["quarters"]:isMalfunction()
-
-                if damaged then
-                    love.debug.printIf("boredom", "couldn't porn because malfunction")
-                end
-            end
-
-            -- it is occupied so choose something else
-            love.debug.printIf("boredom", tostring(occupied), tostring(damaged), tostring(malfunction))
-            if not (occupied or damaged or malfunction) then
-                love.debug.printIf("boredom", "  switched to", task.name)
-                next_task = task
-                switched = true
-            else
-                love.debug.printIf("boredom", "  could not switch to", task.name)
-            end
+            next_task = self:trySwitchingTasks(current_task, task)
         end
     end
 
     return next_task
 end
 
+function class:tryForceWander (current_task, room)
+    local wander
+    for i, task in ipairs(self.tasks) do
+        if task.name == "wander" then
+            wander = task
+        end
+    end
+
+    next_location = wander:getLocation(self.name, { room = room })
+
+    zigspect(next_location)
+end
+
+function class:trySwitchingTasks (current_task, task, opts)
+    if opts then return self:tryForceWander(current_task, opts) end
+
+    local damaged, malfunction, occupied = false, false, false
+    local next_task = current_task, next_location
+
+    love.debug.printIf("boredom", "-------------------------")
+    love.debug.printIf("boredom", self.name, "attempt switch to", task.name)
+
+    next_location = task:getLocation(self.name)
+
+    -- can't do a thing at an occupied location
+    occupied = (next_location == nil)
+
+    -- can't work at a damaged station
+    if task.name == "work" and self.name ~= "engineer" then
+        damaged = game.ship.stations[next_location]:isDamaged()
+
+        if damaged then
+            love.debug.printIf("boredom", "couldn't work because damaged")
+        end
+    elseif task.name == "porn" and self.name ~= "engineer" then
+        damaged = game.ship.stations["quarters"]:isDamaged()
+
+        if damaged then
+            love.debug.printIf("boredom", "couldn't porn because damaged")
+        end
+    end
+
+    -- can't work at a buggy station
+    if task.name == "work" and self.name ~= "cto" then
+        malfunction = game.ship.stations[next_location]:isMalfunction()
+
+        if damaged then
+            love.debug.printIf("boredom", "couldn't work because malfunction")
+        end
+    elseif task.name == "porn" and self.name ~= "cto" then
+        malfunction = game.ship.stations["quarters"]:isMalfunction()
+
+        if damaged then
+            love.debug.printIf("boredom", "couldn't porn because malfunction")
+        end
+    end
+
+    -- it is occupied so choose something else
+    love.debug.printIf("boredom", tostring(occupied), tostring(damaged), tostring(malfunction))
+    if not (occupied or damaged or malfunction) then
+        love.debug.printIf("boredom", "  switched to", task.name)
+        next_task = task
+        switched = true
+    else
+        love.debug.printIf("boredom", "  could not switch to", task.name)
+    end
+
+    return next_task
+end
+
 function class:setDestination(destination)
+    zigspect(destination)
     local location = string.gsub(self.location, '_.', '')
     local station = string.gsub(destination, '_.', '')
 
@@ -195,6 +218,10 @@ function class:update(dt)
                     if not game.ship.stations[self.name]:isDamagedOrMalfunction() then
                         game.map.layers[self.name .. '_on'].visible = true
                     end
+
+                    if self.name == "cto" and not game.ship.stations[self.name]:isDamaged() then
+                        game.ship.snowman:repair()
+                    end
                 end
 
                 -- having arrived, maybe fix it?
@@ -235,7 +262,7 @@ function class:update(dt)
 --          end
 --      end
 
-        if self.current_task ~= next_task then
+        if next_task and self.current_task ~= next_task then
             love.debug.printIf("crew_class", self.name, "switching to", next_task.name)
             -- there is something more exciting to do
             self.current_task = next_task

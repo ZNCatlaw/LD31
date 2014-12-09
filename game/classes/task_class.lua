@@ -38,8 +38,18 @@ local getPornLocation = function (self, crew_name)
     return findAvailableSpot(location)
 end
 
-local getWanderLocation = function (self, crew_name)
-    local location = game.classes.Station.randomStation()
+local getWanderLocation = function (self, crew_name, opts)
+    love.debug.printIf("task_class", "getWanderLocation", self.name, crew_name, opts)
+
+    local location
+
+    if opts then
+        location = opts.room
+    else
+        location = game.classes.Station.randomStation()
+    end
+
+    love.debug.printIf("task_class", "  location", location)
 
     return findAvailableSpot(location)
 end
@@ -71,7 +81,7 @@ local performWork = function (self, crew)
     if crew.name == "cto" then
         local super_computer = game.ship.stations[crew.name]
 
-        if not super_computer:isDamaged() then
+        if not super_computer:isMalfunction() then
             super_computer:debug()
         end
     end

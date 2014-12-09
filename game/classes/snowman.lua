@@ -26,6 +26,18 @@ function class:getDamage()
     return self._damage
 end
 
+function class:mousepressed (room, button)
+    if button == 'l' then
+        -- send engineer to the room
+        local crew = game.ship.crew['engineer']
+
+        crew:tryForceWander(crew.current_task, room)
+
+    elseif button == 'r' then
+        -- send cto to the room
+    end
+end
+
 function class:update(dt)
 
 end
