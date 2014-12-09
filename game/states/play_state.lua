@@ -47,19 +47,6 @@ function state:enter()
 
     TEsound.stop('music')
     TEsound.playLooping('assets/music/pulselooper-kalterkrieg.mp3', 'music', 0.75)
-
-    game.dialog = game.classes.DialogQueue.new({
-        game.classes.Dialog.new({message = 'CAPTAIN: Lomo skateboard leggings, twee American Apparel tofu butcher cronut organic. Mlkshk disrupt flannel, mustache tote bag twee cray.',
-            --persist = true,
-            anim = game.data.anims.captain.walkdown:clone(),
-            image = game.images.peoplesprites,
-            font = game.images.fonts.dialog}),
-        game.classes.Dialog.new({message = 'ENGINEER: Craft beer synth disrupt mustache lumbersexual. Brooklyn Intelligentsia XOXO health goth, retro.',
-            --persist = true,
-            anim = game.data.anims.engineer.walkdown:clone(),
-            image = game.images.peoplesprites,
-            font = game.images.fonts.dialog})
-    })
 end
 
 function state:leave()
@@ -72,7 +59,7 @@ function state:keypressed(key)
     if (key == 'p' or key == 'q' or key == 'escape') then
         Gamestate.push(game.states.pause)
     elseif (key == ' ' or key == 'return') then
-        game.dialog:skipCurrent()
+        self.ui.dialog:skipCurrent()
     end
 end
 
@@ -92,7 +79,6 @@ function state:update(dt)
     game.events:update(dt)
     game.ship:update(dt)
     game.ui:update(dt)
-    game.dialog:update(dt)
 
     local splode = game.ship:shouldAsplode()
     if splode then
@@ -116,7 +102,6 @@ function state:draw()
 
     game.ui:draw()
 
-    game.dialog:draw(32, 96, 384)
 end
 
 return state
