@@ -13,6 +13,14 @@ function ui:initialize()
         header = '',
         message = ''
     }
+
+    self.dialog = game.classes.DialogQueue.new({
+        {message = 'CAPTAIN: Lomo skateboard leggings, twee American Apparel tofu butcher cronut organic. Mlkshk disrupt flannel, mustache tote bag twee cray.',
+            crew = 'captain'},
+        {message = 'ENGINEER: Craft beer synth disrupt mustache lumbersexual. Brooklyn Intelligentsia XOXO health goth, retro.',
+            crew = 'engineer'},
+    })
+
     self.images = game.images.ui
 end
 
@@ -51,6 +59,8 @@ function ui:mousepressed(x, y, button)
 end
 
 function ui:update(dt)
+    self.dialog:update(dt)
+
     local statusbox = self.statusbox
 
     self.highlightLayer = self:getHighlightLayer(love.mouse.getPosition())
@@ -86,6 +96,9 @@ function ui:drawMeter(c, units, x, y)
 end
 
 function ui:draw()
+    -- Title image
+    love.graphics.draw(self.images.title, 32, 32)
+
     -- Highlight Layer
     if self.highlightLayer then
         love.mouse.setCursor(game.images.cursors.red)
@@ -96,6 +109,9 @@ function ui:draw()
     else
         love.mouse.setCursor(game.images.cursors.default)
     end
+
+    -- Dialogue
+    self.dialog:draw(32, 96, 384)
 
     -- Health Bar
     local barX = 3 * 32

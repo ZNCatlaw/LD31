@@ -22,6 +22,7 @@ images.fonts['modalMessage'] = love.graphics.newFont('assets/fonts/Commodore Ang
 
 -- UI
 images.ui = {}
+images.ui.title = love.graphics.newImage('assets/images/ui/title.png')
 images.ui.bar = love.graphics.newImage('assets/images/ui/bar.png')
 images.ui.bar_bg = love.graphics.newImage('assets/images/ui/bar_bg.png')
 images.ui.bar_snowman = love.graphics.newImage('assets/images/ui/bar_snowman.png')
@@ -31,7 +32,6 @@ for i=1,7 do
     images.ui['bar_'..str] = love.graphics.newImage('assets/images/ui/bar_'..str..'.png')
   end
 end
-love.debug.print(images.ui)
 
 -- Cursors
 images.cursors = {}

@@ -23,7 +23,13 @@ function class:initialize(opts)
 end
 
 function class:shouldAsplode()
-    return self.snowman:getDamage() == 7 or self.malfunction == 7 or self.damage == 7
+    if (self.snowman:getDamage() == 7 or self.malfunction == 7 or self.damage == 7) then
+        return {
+            malfunction = self.malfunction,
+            corruption = self.snowman:getDamage(),
+            damage = self.damage
+        }
+    end
 end
 
 function class:update(dt)

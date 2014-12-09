@@ -6,9 +6,14 @@ function class:initialize(opts)
     self.message = opts.message or ''
     self.speed = opts.speed or 12
 
-    self.anim = opts.anim or nil
+    self.crew = opts.crew or nil
     self.image = opts.image or nil
-    self.font = opts.font or nil
+    if self.crew then
+        self.anim = game.data.anims[self.crew].walkdown:clone()
+        self.image = game.images.peoplesprites
+    end
+
+    self.font = opts.font or game.images.fonts.dialog
 
     self.progress = 0
 
