@@ -18,8 +18,6 @@ function class:initialize(opts)
     self.font = opts.font or game.images.fonts.dialog
     self.color = opts.color or {0, 255, 64, 255}
 
-    love.debug.print(self.color)
-
     self.progress = 0
 
     --
