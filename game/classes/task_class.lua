@@ -86,7 +86,6 @@ local performWork = function (self, crew, dt)
 
         crew.work_progress = crew.work_progress + dt
         if crew.work_progress > game.data.tasks.work.cto.deporn_rate then
-            zigspect("DEPORN")
             crew.work_progress = 0
             game.ship.snowman:repair()
         end
@@ -115,14 +114,12 @@ end
 local performWander = function (self, crew)
     if crew.name == "cto" then
         -- debug the current location
-        zigspect(game.ship.stations, crew.location)
         local location = string.gsub(crew.location, "_.", "")
         game.ship.stations[location]:debug()
         game.ship.stations[location].buggy = false
 
     elseif crew.name == "engineer" then
         -- repair the current location
-        zigspect(game.ship.stations, crew.location)
         local location = string.gsub(crew.location, "_.", "")
         game.ship.stations[location]:repair()
         game.ship.stations[location].warning = false

@@ -51,7 +51,6 @@ function ui:mousepressed(x, y, button)
     local room = self:getHighlightLayer(x, y)
     if room then
         room = room:gsub('_highlight','')
-        timspect('CLICKED!', room, button)
 
         game.ship.snowman:mousepressed(room, button)
     end

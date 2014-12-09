@@ -55,10 +55,8 @@ end
 
 -- TODO station should be chosen randomly
 local function damageShip (station)
-    zigspect("event#damageShip", station)
 
     game.ship.stations[station]:damage()
-    zigspect(game.ship.damage, game.ship.corruption)
 
     game.ui:addEventDialogue(event_messages["engineer"]["failure"], "engineer")
 
@@ -66,10 +64,8 @@ local function damageShip (station)
 end
 
 local function malfunctionShip (station)
-    zigspect("event#malfunctionShip", station)
 
     game.ship.stations[station]:malfunction()
-    zigspect(game.ship.damage, game.ship.corruption)
 
     game.ui:addEventDialogue(event_messages["cto"]["failure"], "cto")
 
@@ -78,7 +74,6 @@ end
 
 local function damageSnowman ()
     game.ship.snowman:damage()
-    zigspect(game.ship.snowman._damage)
 
     game.ui:addEventDialogue(event_messages["cto"]["porn"], "cto")
 

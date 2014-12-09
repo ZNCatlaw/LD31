@@ -175,7 +175,6 @@ function class:setDestination(new_destination)
 
     love.debug.printIf("crew_class", "setDestination", location, station)
 
-    zigspect(location, self.location, self.destination, new_destination, station)
 
     -- might just be wandering the halls
     if game.ship.stations[location] then
