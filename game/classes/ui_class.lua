@@ -13,6 +13,7 @@ function ui:initialize()
         header = '',
         message = ''
     }
+    self.images = game.images.ui
 end
 
 function ui:getMouseTile(x,y)
@@ -76,7 +77,16 @@ end
 function ui:addEventStatus (message, posture)
 end
 
+function ui:drawMeter(c, units, x, y)
+    if (units > 7) then return end
+    for i=1,(7-units) do
+        local str = 'bar_'..c..tostring(8-i)
+        love.graphics.draw(self.images[str], x, y)
+    end
+end
+
 function ui:draw()
+    -- Highlight Layer
     if self.highlightLayer then
         love.mouse.setCursor(game.images.cursors.red)
         local r,g,b,a = love.graphics.getColor()
@@ -87,6 +97,18 @@ function ui:draw()
         love.mouse.setCursor(game.images.cursors.default)
     end
 
+    -- Health Bar
+    local barX = 3 * 32
+    local barY = 11 * 32
+    love.graphics.draw(self.images.bar_bg, barX, barY)
+    love.graphics.draw(self.images.bar_snowman, barX, barY)
+    love.graphics.draw(self.images.bar, barX, barY)
+
+    self:drawMeter('g', game.ship.malfunction, barX, barY)
+    self:drawMeter('r', game.ship.damage, barX, barY)
+    self:drawMeter('b', game.ship.snowman:getDamage(), barX, barY)
+
+    -- Status box
     local statusbox = self.statusbox
     local r,g,b,a = love.graphics.getColor()
     love.graphics.setColor(ui.TEXT_COLOR)
